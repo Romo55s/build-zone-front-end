@@ -3,6 +3,10 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
+import { ButtonModule } from 'primeng/button';
+import { CoreModule } from '../core/core.module';
 
 @NgModule({
   declarations: [
@@ -10,10 +14,13 @@ import { AppComponent } from './app.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ButtonModule,
+    CoreModule
   ],
   providers: [
-    provideClientHydration()
+    provideClientHydration(),
+    provideAnimations()
   ],
   bootstrap: [AppComponent]
 })
