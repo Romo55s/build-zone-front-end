@@ -7,10 +7,12 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 
 import { ButtonModule } from 'primeng/button';
 import { CoreModule } from '../core/core.module';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
