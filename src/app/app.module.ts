@@ -10,13 +10,15 @@ import { CoreModule } from '../core/core.module';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SalesReportManagerComponent } from './sales-report-manager/sales-report-manager.component';
+import { TableProductAdminComponent } from './table-product-admin/table-product-admin.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
     SidebarComponent,
-    SalesReportManagerComponent
+    SalesReportManagerComponent,
+    TableProductAdminComponent
   ],
   imports: [
     BrowserModule,
