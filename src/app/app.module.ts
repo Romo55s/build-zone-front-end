@@ -11,6 +11,13 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SalesReportManagerComponent } from './sales-report-manager/sales-report-manager.component';
 import { TableProductAdminComponent } from './table-product-admin/table-product-admin.component';
+import { TableProductComponent } from './views/table-product/table-product.component';
+import { DashboardComponent } from './views/dashboard/dashboard.component';
+import { InventoryComponent } from './views/inventory/inventory.component';
+import { SalesReportComponent } from './views/sales-report/sales-report.component';
+import { SalesComponent } from './views/sales/sales.component';
+import { StoresComponent } from './views/admin/stores/stores.component';
+import { ManagersComponent } from './views/admin/managers/managers.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +25,14 @@ import { TableProductAdminComponent } from './table-product-admin/table-product-
     NavbarComponent,
     SidebarComponent,
     SalesReportManagerComponent,
-    TableProductAdminComponent
+    TableProductAdminComponent,
+    TableProductComponent,
+    DashboardComponent,
+    InventoryComponent,
+    SalesReportComponent,
+    SalesComponent,
+    StoresComponent,
+    ManagersComponent
   ],
   imports: [
     BrowserModule,
