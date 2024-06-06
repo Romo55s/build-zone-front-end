@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-
+  options = ['build-zone-mty', 'build-zone-gdl', 'build-zone-ags', 'build-zone-cdmx']; // Tus opciones aquí
+  
+    showOptions = false;
+  
+    toggleOptions() {
+      this.showOptions = !this.showOptions;
+    }
 }
