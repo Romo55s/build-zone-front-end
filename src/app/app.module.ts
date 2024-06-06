@@ -9,12 +9,14 @@ import { ButtonModule } from 'primeng/button';
 import { CoreModule } from '../core/core.module';
 import { NavbarComponent } from './navbar/navbar.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { SalesReportManagerComponent } from './sales-report-manager/sales-report-manager.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavbarComponent,
-    SidebarComponent
+    SidebarComponent,
+    SalesReportManagerComponent
   ],
   imports: [
     BrowserModule,

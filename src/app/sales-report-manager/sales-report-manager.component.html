@@ -1,0 +1,51 @@
+<div class="min-h-screen flex flex-col">
+    <div class="flex-grow p-4">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg w-2/3 ml-auto">
+            <h1>Sales Report</h1>
+            <div class="flex justify-between items-center px-5 py-4 border-b border-gray-100">
+                <h2 class="font-semibold text-gray-800"> List of Sales </h2>
+                <div class="flex space-x-4">
+                    <div class="relative">
+                        <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4 fill-current text-gray-500">
+                                <path d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z"/>
+                            </svg>
+                        </span>
+                        <input placeholder="Search" class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none"/>
+                    </div>
+                    
+                </div>
+            </div>
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">Sale id</th>
+                        <th scope="col" class="px-6 py-3">Product</th>
+                        <th scope="col" class="px-6 py-3">Units</th>
+                        <th scope="col" class="px-6 py-3">Price</th>
+                        <th scope="col" class="px-6 py-3">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--<tr *ngFor="let sale of " class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
+                        <td class="px-6 py-4">{{ sale.sale_id }}</td>
+                        <td class="px-6 py-4">{{ sale.product }}</td>
+                        <td class="px-6 py-4">{{ sale.units }}</td>
+                        <td class="px-6 py-4">${{ sale.price }}</td>
+                        <td class="px-6 py-4">
+                            <button  class="text-red-600 hover:text-red-800">Delete</button>
+                        </td>
+                    </tr>-->
+                </tbody>
+            </table>
+            <div class="px-6 py-4">
+                <span class="font-semibold text-gray-800">Total Sales</span>
+                <span id="total-sales" class="float-right font-semibold text-gray-800">$</span>
+            </div>
+            <div class="px-6 py-4">
+                <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded" >Export PDF</button>
+            </div>
+        </div>
+    </div>
+</div>
+
