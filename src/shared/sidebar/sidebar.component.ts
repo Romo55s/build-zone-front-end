@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { AuthService } from '../../app/services/auth/auth.service'; // Asegúrate de que la ruta sea correcta
+
 
 @Component({
   selector: 'app-sidebar',
@@ -12,5 +14,12 @@ export class SidebarComponent {
   
     toggleOptions() {
       this.showOptions = !this.showOptions;
+    }
+
+    constructor(private authService: AuthService) {} // Inyecta AuthService
+
+    logout(): void {
+      console.log(this.authService.isAuthenticated());
+      this.authService.logout(); // Llama al método logout de AuthService
     }
 }
