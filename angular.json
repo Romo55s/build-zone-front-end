@@ -37,7 +37,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "./node_modules/@ng-vibe/toastify/styles/styles.css"
             ],
             "scripts": [],
             "server": "src/main.server.ts",

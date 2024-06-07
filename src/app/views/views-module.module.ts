@@ -10,7 +10,11 @@ import { ManagersComponent } from './admin/managers/managers.component';
 import { StoresComponent } from './admin/stores/stores.component';
 import { CoreModule } from '../../core/core.module';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../services/auth/auth.service';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+import { ButtonModule } from 'primeng/button';
+import { TostifyService } from '../services/tostify/tostify.service';
 
 @NgModule({
   declarations: [
@@ -22,11 +26,14 @@ import { AuthService } from '../services/auth.service';
     ManagersComponent,
     StoresComponent
   ],
-  providers: [AuthService],
+  providers: [AuthService, TostifyService],
   imports: [
     CommonModule,
     CoreModule,
-    FormsModule
+    FormsModule,
+    InputTextModule,
+    PasswordModule,
+    ButtonModule,
   ]
 })
 export class ViewsModule { }

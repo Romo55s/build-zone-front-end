@@ -10,9 +10,11 @@ import { ButtonModule } from 'primeng/button';
 import { CoreModule } from '../core/core.module';
 import { SharedModule } from '../shared/shared.module';
 import { ViewsModule } from './views/views-module.module';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './services/guards/auth.guard';
 import { HttpClientModule } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
+import { provideNgVibeToastify } from '@ng-vibe/toastify';
+import { TostifyService } from './services/tostify/tostify.service';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,7 @@ import { MessageService } from 'primeng/api';
     HttpClientModule,
     ViewsModule
   ],
-  providers: [provideClientHydration(), provideAnimations(), AuthGuard, MessageService],
+  providers: [provideClientHydration(), provideAnimations(), AuthGuard, MessageService, provideNgVibeToastify(), TostifyService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

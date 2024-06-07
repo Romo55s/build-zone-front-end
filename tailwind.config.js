@@ -2,8 +2,16 @@
 module.exports = {
   content: ["./src/**/*.{html,ts}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'blueGray': {
+          '900': '#0F172A',
+          '800': '#1E293B',
+          '600': '#475569',
+          '200': '#BFDBFE',
+        },
+      }
+    },
   },
   plugins: [],
 }
-
