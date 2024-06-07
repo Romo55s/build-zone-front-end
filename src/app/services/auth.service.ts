@@ -9,7 +9,7 @@ import * as Cookies from 'js-cookie';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://tu-api-url.com'; // Reemplaza con tu URL de backend
+  private apiUrl = 'https://build-zone-back-end.onrender.com';
 
   constructor(
     private http: HttpClient,

@@ -1,39 +1,33 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
+import {
+  BrowserModule,
+  provideClientHydration,
+} from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ButtonModule } from 'primeng/button';
 import { CoreModule } from '../core/core.module';
-import { DashboardComponent } from './views/dashboard/dashboard.component';
-import { InventoryComponent } from './views/inventory/inventory.component';
-import { SalesReportComponent } from './views/sales-report/sales-report.component';
-import { SalesComponent } from './views/sales/sales.component';
-import { StoresComponent } from './views/admin/stores/stores.component';
-import { ManagersComponent } from './views/admin/managers/managers.component';
-import {SharedModule} from '../shared/shared.module';
+import { SharedModule } from '../shared/shared.module';
+import { ViewsModule } from './views/views-module.module';
+import { AuthGuard } from './guards/auth.guard';
+import { HttpClientModule } from '@angular/common/http';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
-    InventoryComponent,
-    SalesReportComponent,
-    SalesComponent,
-    StoresComponent,
-    ManagersComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ButtonModule,
     CoreModule,
-    SharedModule
+    SharedModule,
+    HttpClientModule,
+    ViewsModule
   ],
-  providers: [
-    provideClientHydration(),
-    provideAnimations()
-  ],
-  bootstrap: [AppComponent]
+  providers: [provideClientHydration(), provideAnimations(), AuthGuard, MessageService],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
