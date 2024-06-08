@@ -29,6 +29,7 @@
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="product">Product <p-sortIcon field="product"></p-sortIcon></th>
+              <th pSortableColumn="image">Image</th>
               <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
               <th pSortableColumn="supplier">Supplier <p-sortIcon field="supplier"></p-sortIcon></th>
               <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
@@ -39,6 +40,7 @@
           <ng-template pTemplate="body" let-product>
             <tr>
               <td>{{ product.product_name }}</td>
+              <td><img src="{{product.image}}" alt="" class="w-16 h-16"></td>
               <td>{{ product.category }}</td>
               <td>{{ product.supplier }}</td>
               <td>${{ product.price }}</td>

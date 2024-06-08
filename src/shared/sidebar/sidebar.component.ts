@@ -104,7 +104,7 @@ export class SidebarComponent {
   }
 
   ReportManager(): void {
-    console.log('Report Manager');
+    this.router.navigate(['/report']);
   }
 
   SalesManager(): void {
