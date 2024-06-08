@@ -15,6 +15,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { TostifyService } from '../services/tostify/tostify.service';
+import { TableModule } from 'primeng/table';
+import { PaginatorModule } from 'primeng/paginator';
+import { DropdownModule } from 'primeng/dropdown';
 
 @NgModule({
   declarations: [
@@ -29,6 +32,9 @@ import { TostifyService } from '../services/tostify/tostify.service';
   providers: [AuthService, TostifyService],
   imports: [
     CommonModule,
+    TableModule,
+    PaginatorModule,
+    DropdownModule,
     CoreModule,
     FormsModule,
     InputTextModule,

@@ -29,7 +29,6 @@ export class LoginComponent {
 
     this.authService.login(this.username, this.password).subscribe({
       next: (response: any) => {
-        console.log(response);
         this.router.navigate(['/dashboard']);
         this.tostyfiService.showSuccess('Login successful!');
       },
