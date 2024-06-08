@@ -22,6 +22,8 @@ export class AuthService {
         tap(response => {
           if (response && response.token) {
             Cookies.set('token', response.token);
+            Cookies.set('username', response.username);
+            Cookies.set('role', response.role);
           }
         })
       );
@@ -29,6 +31,8 @@ export class AuthService {
 
   logout(): void {
     Cookies.remove('token');
+    Cookies.remove('username');
+    Cookies.remove('role');
     console.log('Logged out');
     this.router.navigate(['/login']);
   }

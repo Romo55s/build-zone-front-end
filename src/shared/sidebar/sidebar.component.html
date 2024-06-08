@@ -14,21 +14,10 @@
               shape="circle"
             />
             <div>
-              <p class="font-bold">Username</p>
+              <p class="font-bold">{{ username }}</p>
             </div>
           </div>
           <ul class="space-y-2">
-            <div class="border border-gray-300 text-gray-500 bg-gray-100 rounded-md transition-shadow duration-200 mb-1">
-              <a
-                pRipple
-                class="flex align-items-center px-3 py-2 cursor-pointer"
-              >
-                <i class="pi pi-home text-blueGray-900 font-bold text-sm"></i>
-                <span class="ml-2 text-blueGray-900 font-bold text-sm">
-                  Dashboard
-                </span>
-              </a>
-            </div>
             <p-panelMenu [model]="items" styleClass="w-full md:w-20rem">
               <ng-template pTemplate="item" let-item class="text-sm">
                 <a
