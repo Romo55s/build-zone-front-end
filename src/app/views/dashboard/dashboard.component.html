@@ -2,7 +2,21 @@
   <!-- Card for the first chart -->
   <div class="w-full">
     <p-card header="Top Sales Product" class="w-full">
-      <p-chart type="line" [data]="topSalesProduct" [options]="options"></p-chart>
+      <p-chart
+        type="doughnut"
+        [data]="topSalesProduct"
+        [options]="optionsTopSalesProduct"
+      ></p-chart>
+    </p-card>
+  </div>
+
+  <div class="w-full">
+    <p-card header="Less Sales by Product" class="w-full">
+      <p-chart
+        type="doughnut"
+        [data]="lessSalesProduct"
+        [options]="optionsLessSalesProduct"
+      ></p-chart>
     </p-card>
   </div>
 
@@ -17,12 +31,6 @@
   <div class="w-full">
     <p-card header="Sales by Store" class="w-full">
       <p-chart type="bar" [data]="storeSales"></p-chart>
-    </p-card>
-  </div>
-
-  <div class="w-full">
-    <p-card header="Less Sales by Product" class="w-full">
-      <p-chart type="line" [data]="lessSalesProduct" [options]="options"></p-chart>
     </p-card>
   </div>
 </div>
