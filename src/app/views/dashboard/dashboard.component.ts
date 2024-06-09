@@ -3,6 +3,14 @@ import { AuthService } from '../../services/auth/auth.service';
 import { SalesService } from '../../services/sales/sales.service';
 import { User } from '../../../core/modules/user.module';
 import Cookies from 'js-cookie';
+import { InventoryService } from '../../services/inventory/inventory.service';
+import { StoreService } from '../../services/store/store.service';
+import { Sale } from '../../../core/modules/sales.module';
+import { ProductStore } from '../../../core/modules/product.store.module';
+import { TopSalesProduct } from '../../../core/modules/top.sales.module';
+import { Store } from '../../../core/modules/stores.module';
+import { StoreSales } from '../../../core/modules/sales.store.module';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +29,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private salesService: SalesService
+    private salesService: SalesService,
+    private inventoryService: InventoryService,
+    private storeService: StoreService
   ) {}
 
   ngOnInit(): void {
@@ -50,33 +60,223 @@ export class DashboardComponent implements OnInit {
             return acc;
           }, {});
 
-          const topSalesProductData: any[] = (
-            Object.values(groupedByProduct) as any[]
-          )
-            .map((sales: any[]) => ({
-              product_id: sales[0].product_id,
-              total_quantity: sales.reduce((acc, cur) => acc + cur.quantity, 0),
-            }))
-            .sort((a, b) => b.total_quantity - a.total_quantity);
+          const productPromises = Object.keys(groupedByProduct).map(
+            (product_id) =>
+              this.inventoryService.getById(product_id).toPromise()
+          );
+          Promise.all(productPromises).then((products: ProductStore[]) => {
+            const topSalesProductData: TopSalesProduct[] = products
+              .map((product) => ({
+                product_name: product.product_name,
+                total_quantity: groupedByProduct[product.product_id].reduce(
+                  (acc: any, cur: any) => acc + cur.quantity,
+                  0
+                ),
+              }))
+              .sort((a: any, b: any) => b.total_quantity - a.total_quantity);
 
-          const lessSalesProductData: any[] = (
-            Object.values(groupedByProduct) as any[]
-          )
-            .map((sales: any[]) => ({
-              product_id: sales[0].product_id,
-              total_quantity: sales.reduce((acc, cur) => acc + cur.quantity, 0),
+            const lessSalesProductData: TopSalesProduct[] = products
+              .map((product) => ({
+                product_name: product.product_name,
+                total_quantity: groupedByProduct[product.product_id].reduce(
+                  (acc: any, cur: any) => acc + cur.quantity,
+                  0
+                ),
+              }))
+              .sort((a: any, b: any) => a.total_quantity - b.total_quantity);
+
+            const labels = topSalesProductData.map(
+              (product) => product.product_name
+            );
+            const dataValues = topSalesProductData.map(
+              (product) => product.total_quantity
+            );
+            const backgroundColors = topSalesProductData.map((product, index) =>
+              index === 0 ? '#FF6384' : '#36A2EB'
+            ); // Resalta el más vendido
+
+            const topProduct = topSalesProductData[0];
+            const lessProduct = lessSalesProductData[0];
+
+            this.topSalesProduct = {
+              labels: labels,
+              datasets: [
+                {
+                  label: 'Sales Quantity by Product',
+                  data: dataValues,
+                  backgroundColor: backgroundColors,
+                },
+              ],
+            };
+
+            this.lessSalesProduct = {
+              labels: labels,
+              datasets: [
+                {
+                  label: 'Sales Quantity by Product',
+                  data: dataValues,
+                  backgroundColor: backgroundColors,
+                },
+              ],
+            };
+
+            // Agregar opciones del gráfico con un título que indique el producto con menos ventas
+            this.optionsLessSalesProduct = {
+              plugins: {
+                title: {
+                  display: true,
+                  text: `Less Sales Product: ${lessProduct.product_name} with ${lessProduct.total_quantity} units sold`,
+                  fontSize: 16,
+                },
+              },
+            };
+
+            this.optionsTopSalesProduct = {
+              plugins: {
+                title: {
+                  display: true,
+                  text: `Top Sales Product: ${topProduct.product_name} with ${topProduct.total_quantity} units sold`,
+                  fontSize: 16,
+                },
+              },
+            };
+
+            console.log('Top sales product:', this.topSalesProduct);
+
+            // Agrupación y procesamiento de los datos para SaleStatus
+            const groupedByDate = data.reduce((acc: any, sale: any) => {
+              acc[sale.sale_date] = [...(acc[sale.sale_date] || []), sale];
+              return acc;
+            }, {});
+
+            const saleStatusData = Object.keys(groupedByDate).map((date) => {
+              const salesOnDate = groupedByDate[date];
+              const product = products.find(
+                (product) => product.product_id === salesOnDate[0].product_id
+              );
+              return {
+                sale_date: format(new Date(date), 'MM/dd'), // Formatea la fecha a MM/dd
+                product_name: product ? product.product_name : 'Unknown', // Asume que todos los productos vendidos en la misma fecha son iguales
+                total_sales: salesOnDate.reduce(
+                  (acc: any, cur: any) => acc + Number(cur.total_amount),
+                  0
+                ),
+              };
+            });
+
+            this.SaleStatus = {
+              labels: saleStatusData.map((sale) => sale.sale_date),
+              datasets: [
+                {
+                  label: 'Total Sales',
+                  backgroundColor: backgroundColors,
+                  data: saleStatusData.map((sale) => sale.total_sales),
+                },
+              ],
+            };
+
+            console.log('Sale status:', this.SaleStatus);
+          });
+        },
+        (error) => {
+          console.error('Error fetching sales data:', error);
+        }
+      );
+
+      this.salesService.getAll().subscribe(
+        (data: any) => {
+          const groupedByStore: any = data.reduce((acc: any, sale: any) => {
+            acc[sale.store_id] =
+              (acc[sale.store_id] || 0) + Number(sale.total_amount);
+            return acc;
+          }, {});
+
+          const storePromises = Object.keys(groupedByStore).map((store_id) =>
+            this.storeService.getStoreById(store_id).toPromise()
+          );
+
+          Promise.all(storePromises).then((stores: StoreSales[]) => {
+            const storeSalesData: StoreSales[] = stores
+              .map((store, index) => ({
+                store_id: store.store_id,
+                store_name: store.store_name,
+                total_quantity: groupedByStore[store.store_id],
+              }))
+              .sort((a, b) => b.total_quantity - a.total_quantity);
+
+            const storeLabels = storeSalesData.map((store) => store.store_name);
+            const storeDataValues = storeSalesData.map(
+              (store) => store.total_quantity
+            );
+            const storeBackgroundColors = storeSalesData.map((store, index) =>
+              this.generateRandomColor()
+            ); // Resalta la tienda con más ventas
+
+            const topStore = storeSalesData[0];
+
+            this.storeSales = {
+              labels: storeLabels,
+              datasets: [
+                {
+                  label: 'Sales by Store',
+                  data: storeDataValues,
+                  backgroundColor: storeBackgroundColors,
+                },
+              ],
+            };
+
+            console.log('Store sales:', this.storeSales);
+          });
+        },
+        (error: any) => {
+          console.error('Error fetching store sales data:', error);
+        }
+      );
+    }
+  }
+
+  getAdminData() {
+    this.salesService.getAll().subscribe((data) => {
+      // Agrupación y procesamiento de los datos para topSalesProduct
+      const groupedByProduct: any = data.reduce((acc: any, sale: any) => {
+        acc[sale.product_id] = [...(acc[sale.product_id] || []), sale];
+        return acc;
+      }, {});
+
+      const productPromises = Object.keys(groupedByProduct).map((product_id) =>
+        this.inventoryService.getById(product_id).toPromise()
+      );
+      Promise.all(productPromises).then(
+        (products: ProductStore[]) => {
+          const topSalesProductData: TopSalesProduct[] = products
+            .map((product) => ({
+              product_name: product.product_name,
+              total_quantity: groupedByProduct[product.product_id].reduce(
+                (acc: any, cur: any) => acc + cur.quantity,
+                0
+              ),
             }))
-            .sort((a, b) => a.total_quantity - b.total_quantity); // Ordenar de menor a mayor
+            .sort((a: any, b: any) => b.total_quantity - a.total_quantity);
+
+          const lessSalesProductData: TopSalesProduct[] = products
+            .map((product) => ({
+              product_name: product.product_name,
+              total_quantity: groupedByProduct[product.product_id].reduce(
+                (acc: any, cur: any) => acc + cur.quantity,
+                0
+              ),
+            }))
+            .sort((a: any, b: any) => a.total_quantity - b.total_quantity);
 
           const labels = topSalesProductData.map(
-            (product) => product.product_id
+            (product) => product.product_name
           );
           const dataValues = topSalesProductData.map(
             (product) => product.total_quantity
           );
           const backgroundColors = topSalesProductData.map((product, index) =>
-            index === 0 ? '#FF6384' : '#36A2EB'
-          ); // Resalta el más vendido
+            this.generateRandomColor()
+          );
 
           const topProduct = topSalesProductData[0];
           const lessProduct = lessSalesProductData[0];
@@ -108,7 +308,7 @@ export class DashboardComponent implements OnInit {
             plugins: {
               title: {
                 display: true,
-                text: `Less Sales Product: ${lessProduct.product_id} with ${lessProduct.total_quantity} units sold`,
+                text: `Less Sales Product: ${lessProduct.product_name} with ${lessProduct.total_quantity} units sold`,
                 fontSize: 16,
               },
             },
@@ -118,13 +318,11 @@ export class DashboardComponent implements OnInit {
             plugins: {
               title: {
                 display: true,
-                text: `Top Sales Product: ${topProduct.product_id} with ${topProduct.total_quantity} units sold`,
+                text: `Top Sales Product: ${topProduct.product_name} with ${topProduct.total_quantity} units sold`,
                 fontSize: 16,
               },
             },
           };
-
-          console.log('Top sales product:', this.topSalesProduct);
 
           // Agrupación y procesamiento de los datos para SaleStatus
           const groupedByDate = data.reduce((acc: any, sale: any) => {
@@ -132,20 +330,28 @@ export class DashboardComponent implements OnInit {
             return acc;
           }, {});
 
-          const saleStatusData = Object.keys(groupedByDate).map((date) => ({
-            sale_date: date,
-            total_sales: groupedByDate[date].reduce(
-              (acc: any, cur: any) => acc + Number(cur.total_amount),
-              0
-            ),
-          }));
-
+          const saleStatusData = Object.keys(groupedByDate).map((date) => {
+            const salesOnDate = groupedByDate[date];
+            const product = products.find(
+              (product) => product.product_id === salesOnDate[0].product_id
+            );
+            return {
+              sale_date: format(new Date(date), 'MM/dd'), // Formatea la fecha a MM/dd
+              product_name: product ? product.product_name : 'Unknown', // Asume que todos los productos vendidos en la misma fecha son iguales
+              total_sales: salesOnDate.reduce(
+                (acc: any, cur: any) => acc + Number(cur.total_amount),
+                0
+              ),
+            };
+          });
           this.SaleStatus = {
-            labels: saleStatusData.map((sale) => sale.sale_date),
+            labels: saleStatusData.map(
+              (sale) => `${sale.product_name} (${sale.sale_date})`
+            ), // Muestra el nombre del producto y la fecha
             datasets: [
               {
                 label: 'Total Sales',
-                backgroundColor: '#42A5F5',
+                backgroundColor: backgroundColors,
                 data: saleStatusData.map((sale) => sale.total_sales),
               },
             ],
@@ -157,30 +363,36 @@ export class DashboardComponent implements OnInit {
           console.error('Error fetching sales data:', error);
         }
       );
+    });
 
-      // Obtener las ventas por tienda
-      this.salesService.getAll().subscribe(
-        (data: any) => {
-          const groupedByStore: any = data.reduce((acc: any, sale: any) => {
-            acc[sale.store_id] =
-              (acc[sale.store_id] || 0) + Number(sale.total_amount);
-            return acc;
-          }, {});
+    this.salesService.getAll().subscribe(
+      (data: any) => {
+        const groupedByStore: any = data.reduce((acc: any, sale: any) => {
+          acc[sale.store_id] =
+            (acc[sale.store_id] || 0) + Number(sale.total_amount);
+          return acc;
+        }, {});
 
-          const storeSalesData = Object.keys(groupedByStore)
-            .map((store_id) => ({
-              store_id: store_id,
-              total_sales: groupedByStore[store_id],
+        const storePromises = Object.keys(groupedByStore).map((store_id) =>
+          this.storeService.getStoreById(store_id).toPromise()
+        );
+
+        Promise.all(storePromises).then((stores: StoreSales[]) => {
+          const storeSalesData: StoreSales[] = stores
+            .map((store, index) => ({
+              store_id: store.store_id,
+              store_name: store.store_name,
+              total_quantity: groupedByStore[store.store_id],
             }))
-            .sort((a, b) => b.total_sales - a.total_sales);
+            .sort((a, b) => b.total_quantity - a.total_quantity);
 
-          const storeLabels = storeSalesData.map((store) => store.store_id);
+          const storeLabels = storeSalesData.map((store) => store.store_name);
           const storeDataValues = storeSalesData.map(
-            (store) => store.total_sales
+            (store) => store.total_quantity
           );
           const storeBackgroundColors = storeSalesData.map((store, index) =>
-            index === 0 ? '#FF6384' : '#36A2EB'
-          ); // Resalta la tienda con más ventas
+            this.generateRandomColor()
+          );
 
           const topStore = storeSalesData[0];
 
@@ -194,168 +406,7 @@ export class DashboardComponent implements OnInit {
               },
             ],
           };
-
-          console.log('Store sales:', this.storeSales);
-        },
-        (error: any) => {
-          console.error('Error fetching store sales data:', error);
-        }
-      );
-    }
-  }
-
-  getAdminData() {
-    this.salesService.getAll().subscribe(
-      (data) => {
-        // Agrupación y procesamiento de los datos para topSalesProduct
-        const groupedByProduct: any = data.reduce((acc: any, sale: any) => {
-          acc[sale.product_id] = [...(acc[sale.product_id] || []), sale];
-          return acc;
-        }, {});
-
-        const topSalesProductData: any[] = (
-          Object.values(groupedByProduct) as any[]
-        )
-          .map((sales: any[]) => ({
-            product_id: sales[0].product_id,
-            total_quantity: sales.reduce((acc, cur) => acc + cur.quantity, 0),
-          }))
-          .sort((a, b) => b.total_quantity - a.total_quantity);
-
-        const lessSalesProductData: any[] = (
-          Object.values(groupedByProduct) as any[]
-        )
-          .map((sales: any[]) => ({
-            product_id: sales[0].product_id,
-            total_quantity: sales.reduce((acc, cur) => acc + cur.quantity, 0),
-          }))
-          .sort((a, b) => a.total_quantity - b.total_quantity); // Ordenar de menor a mayor
-
-        const labels = topSalesProductData.map((product) => product.product_id);
-        const dataValues = topSalesProductData.map(
-          (product) => product.total_quantity
-        );
-        const backgroundColors = topSalesProductData.map((product, index) =>
-          this.generateRandomColor()
-        );
-
-        const topProduct = topSalesProductData[0];
-        const lessProduct = lessSalesProductData[0];
-
-        this.topSalesProduct = {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Sales Quantity by Product',
-              data: dataValues,
-              backgroundColor: backgroundColors,
-            },
-          ],
-        };
-
-        this.lessSalesProduct = {
-          labels: labels,
-          datasets: [
-            {
-              label: 'Sales Quantity by Product',
-              data: dataValues,
-              backgroundColor: backgroundColors,
-            },
-          ],
-        };
-
-        // Agregar opciones del gráfico con un título que indique el producto con menos ventas
-        this.optionsLessSalesProduct = {
-          plugins: {
-            title: {
-              display: true,
-              text: `Less Sales Product: ${lessProduct.product_id} with ${lessProduct.total_quantity} units sold`,
-              fontSize: 16,
-            },
-          },
-        };
-
-        this.optionsTopSalesProduct = {
-          plugins: {
-            title: {
-              display: true,
-              text: `Top Sales Product: ${topProduct.product_id} with ${topProduct.total_quantity} units sold`,
-              fontSize: 16,
-            },
-          },
-        };
-
-        console.log('Top sales product:', this.topSalesProduct);
-
-        // Agrupación y procesamiento de los datos para SaleStatus
-        const groupedByDate = data.reduce((acc: any, sale: any) => {
-          acc[sale.sale_date] = [...(acc[sale.sale_date] || []), sale];
-          return acc;
-        }, {});
-
-        const saleStatusData = Object.keys(groupedByDate).map((date) => ({
-          sale_date: date,
-          total_sales: groupedByDate[date].reduce(
-            (acc: any, cur: any) => acc + Number(cur.total_amount),
-            0
-          ),
-        }));
-
-        this.SaleStatus = {
-          labels: saleStatusData.map((sale) => sale.sale_date),
-          datasets: [
-            {
-              label: 'Total Sales',
-              backgroundColor: '#42A5F5',
-              data: saleStatusData.map((sale) => sale.total_sales),
-            },
-          ],
-        };
-
-        console.log('Sale status:', this.SaleStatus);
-      },
-      (error) => {
-        console.error('Error fetching sales data:', error);
-      }
-    );
-
-    this.salesService.getAll().subscribe(
-      (data: any) => {
-        const groupedByStore: any = data.reduce((acc: any, sale: any) => {
-          acc[sale.store_id] =
-            (acc[sale.store_id] || 0) + Number(sale.total_amount);
-          return acc;
-        }, {});
-
-        const storeSalesData = Object.keys(groupedByStore)
-          .map((store_id) => ({
-            store_id: store_id,
-            total_sales: groupedByStore[store_id],
-          }))
-          .sort((a, b) => b.total_sales - a.total_sales);
-
-        const storeLabels = storeSalesData.map((store) => store.store_id);
-        const storeDataValues = storeSalesData.map(
-          (store) => store.total_sales
-        );
-        const storeBackgroundColors = storeSalesData.map((store, index) =>
-          index === 0 ? '#FF6384' : '#36A2EB'
-        ); // Resalta la tienda con más ventas
-
-        const topStore = storeSalesData[0];
-
-        this.storeSales = {
-          labels: storeLabels,
-          datasets: [
-            {
-              label: 'Sales by Store',
-              data: storeDataValues,
-              backgroundColor: storeBackgroundColors,
-            },
-          ],
-        };
-
-        console.log('Store sales:', this.storeSales);
+        });
       },
       (error: any) => {
         console.error('Error fetching store sales data:', error);
