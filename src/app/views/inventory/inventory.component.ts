@@ -4,6 +4,9 @@ import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../../core/modules/user.module';
 import Cookies from 'js-cookie';
 import { ProductStore } from '../../../core/modules/product.store.module';
+import { ActivatedRoute, Router } from '@angular/router';
+import { StoreService } from '../../services/store/store.service';
+import { Store } from'../../../core/modules/stores.module'
 
 @Component({
   selector: 'app-inventory',
@@ -19,10 +22,15 @@ export class InventoryComponent implements OnInit {
   searchTerm: string = '';
   categories: any[] = [];
   statuses: any[] = [];
+  storeName: string ="";
+  tienda: any[] = [];
+  store : Store | null = null;
 
   constructor(
     private inventoryService: InventoryService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private storeService: StoreService,
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -35,10 +43,23 @@ export class InventoryComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadInventory();
+  if(this.user?.role === 'admin'){
+     // Obtener el valor del parámetro de la URL
+    this.route.params.subscribe(params => {
+      this.storeName = params['storeName'];
+      // Cargar el inventario de la tienda específica
+      if (this.storeName) {
+        this.loadInventory(this.storeName);
+      } else {
+        this.allInventary();
+      }
+    });
+  } else if(this.user?.role === 'manager'){
+    this.showInventory();
+  }
   }
 
-  loadInventory() {
+  showInventory(): void{
     if (this.user && this.user.store_id) {
       this.inventoryService.getByStoreId(this.user.store_id).subscribe(
         (data) => {
@@ -62,7 +83,62 @@ export class InventoryComponent implements OnInit {
       console.error('Store ID not found in user data.');
     }
   }
+  
+  loadInventory(storeName: string): void {
+    // Llamar al servicio de inventario para cargar los datos de la tienda específica
+    this.storeService.getStoreByName(storeName).subscribe(
+      (store) => {
+        // Obtener el ID de la tienda
+        console.log("Store by name", store);
+        const storeId = store.store_id;
+        this.inventoryService.getByStoreId(storeId).subscribe(
+          (data) => {
+            console.log('Inventory data:', data);
+            this.products = data;
+            // Llena las categorías y los estados con los datos únicos de los productos
+            this.categories = [
+              ...new Set(this.products.map((product) => product.category)),
+            ];
+            this.statuses = [
+              ...new Set(this.products.map((product) => product.stock)),
+            ];
+            // Filtrar productos si es necesario
+            this.filterProducts();
+          },
+          (error) => {
+            console.error('Error fetching inventory:', error);
+          }
+        );
+      },
+      (error) => {
+        console.error('Error fetching store by name:', error);
+      }
+    );
+  }
+  
+  allInventary(): void{
+    // Llamar al servicio para cargar todos los productos
+  this.inventoryService.getAll().subscribe(
+    (data) => {
+      console.log('All inventory data:', data);
+      this.products = data;
+      // Llena las categorías y los estados con los datos únicos de los productos
+      this.categories = [
+        ...new Set(this.products.map((product) => product.category)),
+      ];
+      this.statuses = [
+        ...new Set(this.products.map((product) => product.stock)),
+      ];
+      // No es necesario aplicar ningún filtro
+      this.filteredProducts = this.products;
+    },
+    (error) => {
+      console.error('Error fetching all inventory:', error);
+    }
+  );
 
+  }
+  
   filterProducts() {
     // Realiza el filtrado solo si hay productos cargados
     if (this.products.length > 0) {
@@ -103,5 +179,12 @@ export class InventoryComponent implements OnInit {
         console.error('Error deleting product:', error);
       }
     );
+  }
+
+  updateProduct(product: any){
+
+  }
+
+  addProduct():void{
   }
 }

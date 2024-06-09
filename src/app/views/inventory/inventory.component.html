@@ -2,7 +2,10 @@
     <div class="flex-grow">
       <div class="w-full">
         <div>
-          <h1 class="text-blueGray-900">Inventory build-zone-mty</h1>
+          <h1 class="text-blueGray-900">Inventory {{storeName}}</h1>
+        </div>
+        <div *ngIf="user?.role === 'admin'">
+          <button pButton type="button"  icon="pi pi-plus" class="p-button-success" (click)="addProduct()">Add</button>
         </div>
   
         <div class="flex justify-between items-center px-5 py-4 border-b border-gray-100 bg-slate-200 border rounded-md">
@@ -46,7 +49,9 @@
               <td>${{ product.price }}</td>
               <td>{{ product.stock }}</td>
               <td *ngIf="user?.role === 'admin'">
+                <button pButton type="button"  icon="pi pi-undo" class="pi-Button-primary" (click)="updateProduct(product)"></button>
                 <button pButton type="button" icon="pi pi-times" class="p-button-danger" (click)="deleteProduct(product)"></button>
+    
               </td>
             </tr>
           </ng-template>

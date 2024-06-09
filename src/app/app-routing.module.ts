@@ -6,14 +6,20 @@ import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { InventoryComponent } from './views/inventory/inventory.component';
 import { SalesReportComponent } from './views/sales-report/sales-report.component';
 import { SalesComponent } from './views/sales/sales.component';
+import { ManagersComponent } from './views/admin/managers/managers.component';
+import { FormInventoryAddComponent } from '../core/components/admin/form-inventory-add/form-inventory-add.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: '', redirectTo: 'login', pathMatch: 'full'},
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'inventory', component: InventoryComponent, canActivate: [AuthGuard] },
+  { path: 'inventory/:storeName', component: InventoryComponent, canActivate: [AuthGuard] }, 
   { path: 'report', component: SalesReportComponent, canActivate: [AuthGuard] },
-  { path: 'sales', component: SalesComponent, canActivate: [AuthGuard] },
+  { path: 'report/:storeName', component: SalesReportComponent, canActivate: [AuthGuard] },
+  { path: 'sales', component: SalesComponent, canActivate: [AuthGuard]},
+  { path: 'managers', component: ManagersComponent, canActivate: [AuthGuard]},
+  { path: 'managers/:storeName', component: ManagersComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: 'login' }
 ];
 
