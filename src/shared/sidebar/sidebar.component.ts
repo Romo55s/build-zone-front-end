@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../app/services/auth/auth.service';
 import Cookies from 'js-cookie';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { User } from '../../core/modules/user.module';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit{
   user: User;
 
   buildZoneItems = [
@@ -91,6 +91,14 @@ export class SidebarComponent {
     }
   }
 
+  ngOnInit(): void {
+    this.loadStore();
+  }
+
+  loadStore(): void {
+    
+  }
+
   dashboardManager(): void {
     console.log('Dashboard Manager');
   }
@@ -108,7 +116,7 @@ export class SidebarComponent {
   }
 
   SalesManager(): void {
-    console.log('Sales Manager');
+    this.router.navigate(['/sales']);
   }
 
   logout(): void {

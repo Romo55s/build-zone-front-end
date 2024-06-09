@@ -18,6 +18,8 @@ import { TostifyService } from '../services/tostify/tostify.service';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
 import { DropdownModule } from 'primeng/dropdown';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
 
 @NgModule({
   declarations: [
@@ -40,6 +42,8 @@ import { DropdownModule } from 'primeng/dropdown';
     InputTextModule,
     PasswordModule,
     ButtonModule,
+    ContextMenuModule,
+    OverlayPanelModule
   ]
 })
 export class ViewsModule { }

@@ -5,6 +5,7 @@ import { LoginComponent } from './views/login/login.component';
 import { DashboardComponent } from './views/dashboard/dashboard.component';
 import { InventoryComponent } from './views/inventory/inventory.component';
 import { SalesReportComponent } from './views/sales-report/sales-report.component';
+import { SalesComponent } from './views/sales/sales.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'inventory', component: InventoryComponent, canActivate: [AuthGuard] },
   { path: 'report', component: SalesReportComponent, canActivate: [AuthGuard] },
+  { path: 'sales', component: SalesComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'login' }
 ];
 
