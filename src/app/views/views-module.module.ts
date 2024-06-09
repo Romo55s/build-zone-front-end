@@ -20,6 +20,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { DropdownModule } from 'primeng/dropdown';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { OverlayPanelModule } from 'primeng/overlaypanel';
     PasswordModule,
     ButtonModule,
     ContextMenuModule,
-    OverlayPanelModule
+    OverlayPanelModule,
+    DialogModule
   ]
 })
 export class ViewsModule { }

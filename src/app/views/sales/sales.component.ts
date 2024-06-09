@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { User } from '../../../core/modules/user.module';
 import Cookies from 'js-cookie';
 import { ProductStore } from '../../../core/modules/product.store.module';
+import { SalesService } from '../../services/sales/sales.service';
 
 @Component({
   selector: 'app-sales',
@@ -22,10 +23,14 @@ export class SalesComponent implements OnInit {
   searchTerm: string = '';
   categories: any[] = [];
   statuses: any[] = [];
+  displayDialog: boolean = false;
+  displayCancelDialog: boolean = false;
+
 
   constructor(
     private inventoryService: InventoryService,
-    private authService: AuthService
+    private authService: AuthService,
+    private salesService: SalesService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -39,6 +44,10 @@ export class SalesComponent implements OnInit {
 
   ngOnInit() {
     this.loadInventory();
+    const saleProducts = localStorage.getItem('saleProducts');
+    if (saleProducts) {
+      this.saleProducts = JSON.parse(saleProducts);
+    }
   }
 
   loadInventory() {
@@ -99,11 +108,13 @@ export class SalesComponent implements OnInit {
       existingProduct.units++;
     } else {
       this.saleProducts.push({ ...product, units: 1 });
+      localStorage.setItem('saleProducts', JSON.stringify(this.saleProducts));
     }
   }
 
   removeProductFromSale(product: any) {
     this.saleProducts = this.saleProducts.filter(p => p.product_id !== product.product_id);
+    localStorage.setItem('saleProducts', JSON.stringify(this.saleProducts));
   }
 
   increaseUnits(product: any) {
@@ -129,11 +140,13 @@ export class SalesComponent implements OnInit {
   finalizeSale() {
     // Lógica para finalizar la venta
     console.log('Finalizing sale with products:', this.saleProducts);
+    this.displayDialog = true;
     // Aquí puedes agregar la lógica para guardar la venta en el servidor o realizar otras acciones necesarias
   }
 
   cancelSale() {
     // Lógica para cancelar la venta
     this.saleProducts = [];
+    this.displayCancelDialog = true;
   }
 }
