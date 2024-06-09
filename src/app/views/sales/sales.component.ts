@@ -177,7 +177,7 @@ export class SalesComponent implements OnInit {
       );
     });
 
-    // Limpiar saleProducts después de finalizar la venta
+    
     this.saleProducts = [];
     localStorage.setItem('saleProducts', JSON.stringify(this.saleProducts));
   }
