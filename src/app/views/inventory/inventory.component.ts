@@ -30,6 +30,7 @@ export class InventoryComponent implements OnInit {
     private inventoryService: InventoryService,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router,
     private storeService: StoreService,
   ) {
     let userCookie = Cookies.get('user');
@@ -91,6 +92,8 @@ export class InventoryComponent implements OnInit {
         // Obtener el ID de la tienda
         console.log("Store by name", store);
         const storeId = store.store_id;
+        this.store = store;
+
         this.inventoryService.getByStoreId(storeId).subscribe(
           (data) => {
             console.log('Inventory data:', data);
@@ -182,9 +185,18 @@ export class InventoryComponent implements OnInit {
   }
 
   updateProduct(product: any){
-
+    if (this.store) {
+      this.router.navigate(['/updateProduct', { productId: product.product_id, storeId: product.store_id }]);
+    } else {
+      console.error('Store not loaded.');
+    }
   }
 
   addProduct():void{
+    if (this.store) {
+    this.router.navigate(['/addProduct', { storeId: this.store.store_id }]);
+  } else {
+    console.error('Store not loaded.');
+  }
   }
 }

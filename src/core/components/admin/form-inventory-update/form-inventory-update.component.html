@@ -1,1 +1,46 @@
-<p>form-inventory-update works!</p>
+<h1 class="text-blueGray-900">Update </h1>
+<div class="p-grid p-dir-col form-container" style="max-width: 400px;">
+  <form [formGroup]="updateProductForm" (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="p-grid">
+      <div class="p-col-12">
+        <div class="p-field">
+          <label for="product_name">Product Name</label>
+          <input id="product_name" formControlName="product_name" class="p-inputtext p-inputtext-lg" />
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field">
+          <label for="category">Category</label>
+          <input id="category" formControlName="category" class="p-inputtext p-inputtext-lg" />
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field">
+          <label for="price">Price</label>
+          <input id="price" formControlName="price" class="p-inputtext p-inputtext-lg" />
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field">
+          <label for="stock">Stock</label>
+          <input id="stock" formControlName="stock" class="p-inputtext p-inputtext-lg" />
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field">
+          <label for="image">Image</label>
+          <input id="image" formControlName="image" class="p-inputtext p-inputtext-lg" />
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field">
+          <label for="supplier">Supplier</label>
+          <input id="supplier" formControlName="supplier" class="p-inputtext p-inputtext-lg" />
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12">
+      <button type="submit" class="p-button bg-blueGray-200 text-blueGray-900 font-bold border-0 w-full justify-center">Update Product</button>
+    </div>
+  </form>
+</div>

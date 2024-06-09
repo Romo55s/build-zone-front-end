@@ -115,6 +115,11 @@ export class SidebarComponent implements OnInit{
               command: () => this.navigate('managers', ''),
             },
             {
+              label: 'Stores',
+              icon:'pi pi-building',
+              items:this.buildZoneItems
+            },
+            {
               label: 'Log out',
               icon: 'pi pi-power-off',
               command: () => this.logout(),

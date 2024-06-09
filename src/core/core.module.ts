@@ -5,6 +5,10 @@ import { FormManagerAddComponent } from './components/admin/form-manager-add/for
 import { FormManagerUpdateComponent } from './components/admin/form-manager-update/form-manager-update.component';
 import { FormInventoryAddComponent } from './components/admin/form-inventory-add/form-inventory-add.component';
 import { FormInventoryUpdateComponent } from './components/admin/form-inventory-update/form-inventory-update.component';
+import { FormsModule } from '@angular/forms'; // Importa FormsModule
+import { ReactiveFormsModule } from '@angular/forms'; // Importa ReactiveFormsModule
+
+
 
 @NgModule({
   declarations: [
@@ -12,10 +16,12 @@ import { FormInventoryUpdateComponent } from './components/admin/form-inventory-
     FormManagerAddComponent,
     FormManagerUpdateComponent,
     FormInventoryAddComponent,
-    FormInventoryUpdateComponent
+    FormInventoryUpdateComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class CoreModule { }
