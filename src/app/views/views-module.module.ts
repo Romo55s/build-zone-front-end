@@ -22,6 +22,10 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
+import { ChartModule } from 'primeng/chart';
+import { CardModule } from 'primeng/card';
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { BadgeModule } from 'primeng/badge';
 
 @NgModule({
   declarations: [
@@ -46,7 +50,11 @@ import { MessageService } from 'primeng/api';
     ButtonModule,
     ContextMenuModule,
     OverlayPanelModule,
-    DialogModule
+    DialogModule,
+    ChartModule,
+    CardModule,
+    PanelMenuModule,
+    BadgeModule
   ]
 })
 export class ViewsModule { }

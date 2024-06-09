@@ -13,7 +13,7 @@ import { Store } from '../../core/modules/stores.module';
 })
 export class SidebarComponent implements OnInit{
   user: User;
-
+  user_store: string;
   buildZoneItems = [
     { label: '' },
   ];
@@ -22,14 +22,27 @@ export class SidebarComponent implements OnInit{
 
   constructor(private authService: AuthService, private router: Router, private storeService: StoreService) {
     let userCookie = Cookies.get('user');
-    
-
+    this.user_store = '';
     try {
       this.user = JSON.parse(userCookie || '{}') as User;
     } catch (error) {
       console.error('Error parsing user cookie:', error);
       this.user = {} as User;
     }
+
+    if(this.user.role === 'manager') {
+      this.storeService.getStoreById(this.user.store_id).subscribe(
+        (store) => {
+          this.user_store = store.store_name;
+        },
+        (error) => {
+          console.error('Error fetching store:', error);
+        }
+      );
+    }else{
+      this.user_store = 'build-zone_global';
+    }
+    
     if (this.user.role === 'manager') {
       this.items = [
         {
@@ -125,7 +138,6 @@ export class SidebarComponent implements OnInit{
 
   dashboardAdmin(): void {
     this.router.navigate(['/dashboard']);
-    console.log('Dashboard Admin');
   }
 
   // Manager

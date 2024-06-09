@@ -25,6 +25,13 @@ export class StoreService {
       withCredentials: true,
     };
   }
+  
+  getStoreById(storeId: string): Observable<any> {
+    const url = `${this.apiUrl}/byid/${storeId}`;
+    return this.http
+      .get<any>(url, this.getHttpOptions())
+      .pipe(catchError(this.handleError<any>('getStoreById')));
+  }
 
   getStoreByName(storeName: string): Observable<any> {
     const url = `${this.apiUrl}/bystore/${storeName}`;

@@ -1,4 +1,28 @@
-<div class="w-full h-full">
-  <p>dashboard works!</p>
-  <button (click)="logout()">Logout</button>
+<div class="w-full h-full grid grid-cols-1 md:grid-cols-2 gap-8 mt-4">
+  <!-- Card for the first chart -->
+  <div class="w-full">
+    <p-card header="Top Sales Product" class="w-full">
+      <p-chart type="line" [data]="topSalesProduct" [options]="options"></p-chart>
+    </p-card>
+  </div>
+
+  <!-- Card for the second chart -->
+  <div class="w-full">
+    <p-card header="Sale Status" class="w-full">
+      <p-chart type="bar" [data]="SaleStatus"></p-chart>
+    </p-card>
+  </div>
+
+  <!-- Card for the third chart -->
+  <div class="w-full">
+    <p-card header="Sales by Store" class="w-full">
+      <p-chart type="bar" [data]="storeSales"></p-chart>
+    </p-card>
+  </div>
+
+  <div class="w-full">
+    <p-card header="Less Sales by Product" class="w-full">
+      <p-chart type="line" [data]="lessSalesProduct" [options]="options"></p-chart>
+    </p-card>
+  </div>
 </div>
