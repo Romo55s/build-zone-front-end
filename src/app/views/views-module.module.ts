@@ -21,6 +21,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { DialogModule } from 'primeng/dialog';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { DialogModule } from 'primeng/dialog';
     ManagersComponent,
     StoresComponent
   ],
-  providers: [AuthService, TostifyService],
+  providers: [AuthService, TostifyService, MessageService],
   imports: [
     CommonModule,
     TableModule,

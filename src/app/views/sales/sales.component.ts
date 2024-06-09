@@ -6,11 +6,13 @@ import { User } from '../../../core/modules/user.module';
 import Cookies from 'js-cookie';
 import { ProductStore } from '../../../core/modules/product.store.module';
 import { SalesService } from '../../services/sales/sales.service';
+import { MessageService } from 'primeng/api';
+import { Sale } from '../../../core/modules/sales.module';
 
 @Component({
   selector: 'app-sales',
   templateUrl: './sales.component.html',
-  styleUrls: ['./sales.component.scss']
+  styleUrls: ['./sales.component.scss'],
 })
 export class SalesComponent implements OnInit {
   @ViewChild('overlay') overlay!: OverlayPanel;
@@ -26,11 +28,11 @@ export class SalesComponent implements OnInit {
   displayDialog: boolean = false;
   displayCancelDialog: boolean = false;
 
-
   constructor(
     private inventoryService: InventoryService,
     private authService: AuthService,
-    private salesService: SalesService
+    private salesService: SalesService,
+    private messageService: MessageService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -103,7 +105,9 @@ export class SalesComponent implements OnInit {
   }
 
   addProductToSale(product: any) {
-    const existingProduct = this.saleProducts.find(p => p.product_id === product.product_id);
+    const existingProduct = this.saleProducts.find(
+      (p) => p.product_id === product.product_id
+    );
     if (existingProduct) {
       existingProduct.units++;
     } else {
@@ -113,19 +117,25 @@ export class SalesComponent implements OnInit {
   }
 
   removeProductFromSale(product: any) {
-    this.saleProducts = this.saleProducts.filter(p => p.product_id !== product.product_id);
+    this.saleProducts = this.saleProducts.filter(
+      (p) => p.product_id !== product.product_id
+    );
     localStorage.setItem('saleProducts', JSON.stringify(this.saleProducts));
   }
 
   increaseUnits(product: any) {
-    const saleProduct = this.saleProducts.find(p => p.product_id === product.product_id);
+    const saleProduct = this.saleProducts.find(
+      (p) => p.product_id === product.product_id
+    );
     if (saleProduct) {
       saleProduct.units++;
     }
   }
 
   decreaseUnits(product: any) {
-    const saleProduct = this.saleProducts.find(p => p.product_id === product.product_id);
+    const saleProduct = this.saleProducts.find(
+      (p) => p.product_id === product.product_id
+    );
     if (saleProduct && saleProduct.units > 1) {
       saleProduct.units--;
     } else {
@@ -134,18 +144,45 @@ export class SalesComponent implements OnInit {
   }
 
   getTotalAmount(): number {
-    return this.saleProducts.reduce((total, product) => total + product.price * product.units, 0);
+    return this.saleProducts.reduce(
+      (total, product) => total + product.price * product.units,
+      0
+    );
   }
 
   finalizeSale() {
-    // Lógica para finalizar la venta
     console.log('Finalizing sale with products:', this.saleProducts);
     this.displayDialog = true;
-    // Aquí puedes agregar la lógica para guardar la venta en el servidor o realizar otras acciones necesarias
+    
+    this.saleProducts.forEach((product) => {
+      const sale : Sale = {
+        sale_date: new Date(),
+        store_id: this.user?.store_id || '',
+        product_id: product.product_id,
+        quantity: product.units,
+        unit_price: product.price,
+        total_amount: product.price * product.units,
+      };
+      console.log('store_id:', this.user?.store_id || '');
+      console.log('Adding sale:', sale);
+      this.salesService.addSale(sale).subscribe(
+        (data) => {
+          console.log('Sale added:', data);
+          this.messageService.add({severity:'success', summary:'Success', detail:'Sale added successfully'});
+        },
+        (error) => {
+          console.error('Error adding sale:', error);
+          this.messageService.add({severity:'error', summary:'Error', detail:'Error adding sale'});
+        }
+      );
+    });
+
+    // Limpiar saleProducts después de finalizar la venta
+    this.saleProducts = [];
+    localStorage.setItem('saleProducts', JSON.stringify(this.saleProducts));
   }
 
   cancelSale() {
-    // Lógica para cancelar la venta
     this.saleProducts = [];
     this.displayCancelDialog = true;
   }
