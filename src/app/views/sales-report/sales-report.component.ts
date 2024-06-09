@@ -7,6 +7,11 @@ import Cookies from 'js-cookie';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ProductStore } from '../../../core/modules/product.store.module';
+import { Store } from'../../../core/modules/stores.module'
+import { Router } from 'express';
+import { StoreService } from '../../services/store/store.service';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-sales-report',
@@ -24,11 +29,17 @@ export class SalesReportComponent implements OnInit {
   categories: any[] = [];
   statuses: any[] = [];
   filteredProducts: any[] = [];
+  storeName: string ="";
+  tienda: any[] = [];
+  store : Store | null = null;
 
   constructor(
     private salesService: SalesService,
     private authService: AuthService,
-    private InventoryService: InventoryService
+    private inventoryService: InventoryService,
+    private storeService: StoreService,
+    private route: ActivatedRoute,
+
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -40,10 +51,23 @@ export class SalesReportComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadSales();
+    if(this.user?.role === 'admin'){
+      // Obtener el valor del parámetro de la URL
+      this.route.params.subscribe(params => {
+        this.storeName = params['storeName'];
+       // Cargar el inventario de la tienda específica
+        if (this.storeName) {
+          this.loadSales(this.storeName);
+        } else {
+          this.allSales();
+        }
+      });
+    } else if(this.user?.role === 'manager'){
+      this.showSales();
+    }
   }
 
-  loadSales() {
+  showSales(){
     if (this.user && this.user.store_id) {
       forkJoin({
         sales: this.salesService.getByStore(this.user.store_id).pipe(
@@ -52,7 +76,7 @@ export class SalesReportComponent implements OnInit {
             return of(null);
           })
         ),
-        inventory: this.InventoryService.getByStoreId(this.user.store_id).pipe(
+        inventory: this.inventoryService.getByStoreId(this.user.store_id).pipe(
           catchError((error) => {
             console.error('Error fetching inventory:', error);
             return of(null);
@@ -78,6 +102,68 @@ export class SalesReportComponent implements OnInit {
       console.error('Store ID not found in user data.');
     }
   }
+
+
+    allSales(): void {
+      this.salesService.getAll().subscribe(
+        (sales) => {
+          console.log('All sales data:', sales);
+          // Asignar los datos de ventas sin filtrar
+          this.sales = sales;
+          // Filtrar las ventas si es necesario
+          this.filterSales();
+        },
+        (error) => {
+          console.error('Error fetching all sales:', error);
+        }
+      );
+  }
+  
+  loadSales(storeName: string): void {
+    // Llamar al servicio de tienda para obtener el ID de la tienda basada en el nombre de la tienda
+    this.storeService.getStoreByName(storeName).subscribe(
+      (store) => {
+        // Obtener el ID de la tienda
+        console.log("Store by name", store);
+        const storeId = store.store_id;
+  
+        // Usar el ID de la tienda para obtener las ventas e inventario
+        forkJoin({
+          sales: this.salesService.getByStore(storeId).pipe(
+            catchError((error) => {
+              console.error('Error fetching sales:', error);
+              return of(null);
+            })
+          ),
+          inventory: this.inventoryService.getByStoreId(storeId).pipe(
+            catchError((error) => {
+              console.error('Error fetching inventory:', error);
+              return of(null);
+            })
+          ),
+        }).subscribe(({ sales, inventory }) => {
+          if (sales) {
+            this.sales = sales;
+            this.filterSales();
+          }
+          if (inventory) {
+            this.products = inventory;
+            this.categories = [
+              ...new Set(this.products.map((product) => product.category)),
+            ];
+            this.statuses = [
+              ...new Set(this.products.map((product) => product.stock)),
+            ];
+            this.filterProducts();
+          }
+        });
+      },
+      (error) => {
+        console.error('Error fetching store by name:', error);
+      }
+    );
+  }
+  
 
   filterProducts() {
     // Realiza el filtrado solo si hay productos cargados

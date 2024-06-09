@@ -13,19 +13,13 @@ export class SidebarComponent {
   user: User;
 
   buildZoneItems = [
-    { label: 'build-zone-mty', routerLink: '#' },
-    { label: 'build-zone-gdl', routerLink: '#' },
-    { label: 'build-zone-ags', routerLink: '#' },
-    { label: 'build-zone-cdmx', routerLink: '#' },
+    { label: 'build-zone-mty'},
+    { label: 'build-zone-gdl'},
+    { label: 'build-zone-ags'},
+    { label: 'build-zone-cdmx'},
   ];
 
-  items = [
-    { label: 'Inventory', icon: 'pi pi-folder', items: this.buildZoneItems },
-    { label: 'Stores', icon: 'pi pi-shop', items: this.buildZoneItems },
-    { label: 'Report', icon: 'pi pi-chart-bar', items: this.buildZoneItems },
-    { label: 'Managers', icon: 'pi pi-users', items: this.buildZoneItems },
-    { label: 'Log out', icon: 'pi pi-power-off', command: () => this.logout() },
-  ];
+  items: any = [];
 
   constructor(private authService: AuthService, private router: Router) {
     let userCookie = Cookies.get('user');
@@ -45,15 +39,30 @@ export class SidebarComponent {
         {
           label: 'Inventory',
           icon: 'pi pi-folder',
-          items: this.buildZoneItems,
+          items: this.buildZoneItems.map(item => ({
+            ...item,
+            command: () => this.navigate('inventory', item.label)
+          })),
+          command: () => this.navigate('inventory', '')
         },
-        { label: 'Stores', icon: 'pi pi-shop', items: this.buildZoneItems },
         {
           label: 'Report',
           icon: 'pi pi-chart-bar',
-          items: this.buildZoneItems,
+          items: this.buildZoneItems.map(item => ({
+            ...item,
+            command: () => this.navigate('report', item.label)
+          })),
+          command: () => this.navigate('report', '')
         },
-        { label: 'Managers', icon: 'pi pi-users', items: this.buildZoneItems },
+        { 
+          label: 'Managers', 
+          icon: 'pi pi-users', 
+          items: this.buildZoneItems.map(item => ({
+            ...item,
+            command: () => this.navigate('managers', item.label)
+          })),
+          command: () => this.navigate('managers', '')
+        },
         {
           label: 'Log out',
           icon: 'pi pi-power-off',
@@ -91,12 +100,24 @@ export class SidebarComponent {
     }
   }
 
-  dashboardManager(): void {
-    console.log('Dashboard Manager');
+  navigate(page: string, storeName: string): void {
+    console.log(`Navigating to ${page} for store: ${storeName}`);
+    this.router.navigate([`/${page}`, { storeName: storeName }]);
   }
 
+  //Admin 
+
   dashboardAdmin(): void {
+    this.router.navigate(['/dashboard']);
     console.log('Dashboard Admin');
+  }
+
+ 
+ // Manager
+
+  dashboardManager(): void {
+    this.router.navigate(['/dashboard']);
+    console.log('Dashboard Manager');
   }
 
   InventoryManager(): void {
@@ -110,6 +131,7 @@ export class SidebarComponent {
   SalesManager(): void {
     console.log('Sales Manager');
   }
+
 
   logout(): void {
     this.authService.logout();

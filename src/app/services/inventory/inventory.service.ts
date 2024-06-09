@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service'; // Importa tu servicio de autenticación
 import { of } from 'rxjs';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +34,7 @@ export class InventoryService {
       .get<any>(url, this.getHttpOptions())
       .pipe(catchError(this.handleError<any>('getByStoreId')));
   }
+
 
   addProduct(storeName: string, product: any): Observable<any> {
     const url = `${this.apiUrl}/add`;
