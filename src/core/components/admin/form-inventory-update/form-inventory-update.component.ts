@@ -24,7 +24,7 @@ export class FormInventoryUpdateComponent {
       product_name: ['', Validators.required],
       category: ['', Validators.required],
       supplier: ['', Validators.required],
-      price: ['', Validators.required],
+      price: ['', [Validators.required, Validators.pattern(/^\d*\.?\d*$/)]], // Solo permite números y un punto decimal opcional
       stock: ['', Validators.required],
       image: ['', Validators.required],
     });
@@ -52,17 +52,36 @@ export class FormInventoryUpdateComponent {
 
   onSubmit(): void {
     if (this.updateProductForm.valid) {
-      this.inventoryService.updateProduct(this.productId, this.updateProductForm.value).subscribe(
+      const updatedProduct = { ...this.updateProductForm.value, store_id: this.storeId };
+  
+      // Convertir el precio a una cadena de texto
+      updatedProduct.price = updatedProduct.price.toString();
+  
+      // Enviamos los datos actualizados al servicio de inventario
+      this.inventoryService.updateProduct(this.productId, updatedProduct).subscribe(
         response => {
           console.log('Product updated successfully:', response);
-          this.router.navigate(['/inventory', { storeName: this.storeId }]);
+          this.router.navigate(['/inventory', { storeId: this.storeId }]);
         },
         error => {
           console.error('Error updating product:', error);
         }
       );
+    } else {
+      // Si el formulario no es válido, mostrar un mensaje de error
+      console.error('El formulario no es válido.');
     }
   }
+  
+  
+  
+  
 
-  cancel(): void{}
+  cancel(): void {
+    this.router.navigate(['/inventory', { storeId: this.storeId }]);
+  }
+
+  showProductInfo(): void {
+    console.log(this.product);
+  }
 }

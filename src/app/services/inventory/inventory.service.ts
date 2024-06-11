@@ -36,9 +36,9 @@ export class InventoryService {
   }
 
 
-  addProduct(storeName: string, product: any): Observable<any> {
+  addProduct(storeId: string, product: any): Observable<any> {
     const url = `${this.apiUrl}/add`;
-    const body = { storeName, product };
+    const body = { storeId, product };
     return this.http
       .post<any>(url, body, this.getHttpOptions())
       .pipe(catchError(this.handleError<any>('addProduct')));
