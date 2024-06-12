@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service'; // Importa tu servicio de autenticación
@@ -36,12 +36,27 @@ export class InventoryService {
   }
 
 
-  addProduct(storeId: string, product: any): Observable<any> {
+  addProduct(product: any, imageFile: File): Observable<any> {
     const url = `${this.apiUrl}/add`;
-    const body = { storeId, product };
-    return this.http
-      .post<any>(url, body, this.getHttpOptions())
-      .pipe(catchError(this.handleError<any>('addProduct')));
+    const formData: FormData = new FormData();
+    
+    formData.append('store_id', product.store_id);
+    formData.append('product_name', product.product_name);
+    formData.append('price', product.price.toString());
+    formData.append('category', product.category);
+    formData.append('stock', product.stock.toString());
+    formData.append('supplier', product.supplier);
+    formData.append('image', imageFile);
+  
+    // Crea una nueva instancia de HttpRequest
+    const req = new HttpRequest('POST', url, formData, {
+      reportProgress: true,
+      ...this.getHttpOptions()
+    });
+  
+    return this.http.request<any>(req).pipe(
+      catchError(this.handleError<any>('addProduct'))
+    );
   }
 
   updateProduct(productId: string, product: any): Observable<any> {

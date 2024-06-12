@@ -5,6 +5,6 @@ export interface ProductStore {
   category: string;
   price: number;
   stock: number;
-  image: string;
+  image: File;
   supplier: string;
 }
