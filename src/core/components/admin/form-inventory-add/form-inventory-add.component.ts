@@ -3,6 +3,7 @@ import { ProductStore } from '../../../modules/product.store.module';
 import { InventoryService } from '../../../../app/services/inventory/inventory.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../app/services/auth/auth.service';
+import { ProductStoreAdd } from '../../../modules/product.store.add.module';
 
 @Component({
   selector: 'app-form-inventory-add',
@@ -14,8 +15,7 @@ export class FormInventoryAddComponent implements OnInit {
   storeName: any;
   selectedFile: File | null = null;
   
-  product: ProductStore = {
-    product_id: '',
+  product: ProductStoreAdd = {
     store_id: '', 
     product_name: '',
     category: '',
@@ -44,12 +44,12 @@ export class FormInventoryAddComponent implements OnInit {
   }
 
 
-  onFileSelected(event: any): void {
-    this.selectedFile = event.files[0] || null;
-    if (this.selectedFile) {
-      this.product.image = this.selectedFile;
+  onFileSelected(event?: any): void {
+    if(event && event.files && event.files.length > 0){
+      const file = event.files[0];
+      this.product.image = file;
     }else{
-      console.error('No image file selected');
+      console.log('No file selected');
     }
   }
 
@@ -59,15 +59,10 @@ export class FormInventoryAddComponent implements OnInit {
       return;
     }
 
-    if (!this.selectedFile) {
-      console.error('No image file selected, cannot submit the form');
-      return;
-    }
-
     // Asegúrate de asignar el store_id al producto
     this.product.store_id = this.storeId;
     console.log('Product:', this.product);
-    this.inventoryService.addProduct(this.product, this.selectedFile).subscribe(
+    this.inventoryService.addProduct(this.product).subscribe(
       (response) => {
         console.log('Product added successfully', response);
       },
