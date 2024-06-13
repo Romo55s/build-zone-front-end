@@ -37,21 +37,19 @@ export class InventoryService {
   }
 
 
-  addProduct(product: any): Observable<any> {
+  addProduct(product: ProductStoreAdd): Observable<any> {
     const url = `${this.apiUrl}/add`;
     const formData: FormData = new FormData();
-    
-    console.log('Product ->>', product);
   
-    // Agrega el objeto product completo como un JSON string bajo una clave "product"
-    formData.append('product', JSON.stringify({
-      store_id: product.store_id,
-      product_name: product.product_name,
-      price: product.price,
-      category: product.category,
-      stock: product.stock,
-      supplier: product.supplier,
-    }));
+    console.log('Product ->>', product);
+    
+    // Agrega cada campo individualmente
+    formData.append('store_id', product.store_id);
+    formData.append('product_name', product.product_name);
+    formData.append('price', product.price.toString());
+    formData.append('category', product.category);
+    formData.append('stock', product.stock.toString());
+    formData.append('supplier', product.supplier);
   
     // Asegúrate de que product.image es un objeto File
     if (product.image instanceof File) {
@@ -60,20 +58,27 @@ export class InventoryService {
       console.error('Product image is not a file');
       return throwError('Product image must be a file');
     }
-    
-    console.log('Form Data ->>', formData);
+  
+    // Verifica el contenido de FormData
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+    });
+
+    console.log('FormData ->>', formData);
   
     // Crea una nueva instancia de HttpRequest
     const req = new HttpRequest('POST', url, formData, {
       reportProgress: true,
-      ...this.getHttpOptions()
+      headers: new HttpHeaders({
+        ContetType: 'multipart/form-data',
+        Authorization: `Bearer ${this.authService.getToken()}`
+      })
     });
   
     return this.http.request<any>(req).pipe(
       catchError(this.handleError<any>('addProduct'))
     );
   }
-  
 
   updateProduct(productId: string, product: any): Observable<any> {
     const url = `${this.apiUrl}/update/${productId}`;
