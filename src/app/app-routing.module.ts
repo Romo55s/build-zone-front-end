@@ -8,6 +8,7 @@ import { SalesReportComponent } from './views/sales-report/sales-report.componen
 import { SalesComponent } from './views/sales/sales.component';
 import { ManagersComponent } from './views/admin/managers/managers.component';
 import { FormInventoryAddComponent } from '../core/components/admin/form-inventory-add/form-inventory-add.component';
+import { FormInventoryUpdateComponent } from '../core/components/admin/form-inventory-update/form-inventory-update.component';
 import { StoresComponent } from './views/admin/stores/stores.component';
 
 const routes: Routes = [
@@ -21,6 +22,8 @@ const routes: Routes = [
   { path: 'sales', component: SalesComponent, canActivate: [AuthGuard]},
   { path: 'managers', component: ManagersComponent, canActivate: [AuthGuard]},
   { path: 'managers/:storeName', component: ManagersComponent, canActivate: [AuthGuard]},
+  { path: 'addProduct', component: FormInventoryAddComponent, canActivate: [AuthGuard]},
+  { path: 'updateProduct', component: FormInventoryUpdateComponent, canActivate: [AuthGuard]}, 
   { path: 'stores/:storeName', component: StoresComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: 'login' }
 ];

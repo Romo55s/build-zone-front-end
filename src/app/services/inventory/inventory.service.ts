@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service'; // Importa tu servicio de autenticación
 import { of } from 'rxjs';
 import { throwError } from 'rxjs';
+import { ProductStoreAdd } from '../../../core/modules/product.store.add.module';
 
 @Injectable({
   providedIn: 'root',
@@ -36,23 +37,92 @@ export class InventoryService {
   }
 
 
-  addProduct(storeName: string, product: any): Observable<any> {
+  addProduct(product: ProductStoreAdd): Observable<any> {
     const url = `${this.apiUrl}/add`;
-    const body = { storeName, product };
-    return this.http
-      .post<any>(url, body, this.getHttpOptions())
-      .pipe(catchError(this.handleError<any>('addProduct')));
+    const formData: FormData = new FormData();
+  
+    console.log('Product ->>', product);
+    
+    // Agrega cada campo individualmente
+    formData.append('store_id', product.store_id);
+    formData.append('product_name', product.product_name);
+    formData.append('price', product.price.toString());
+    formData.append('category', product.category);
+    formData.append('stock', product.stock.toString());
+    formData.append('supplier', product.supplier);
+  
+    // Asegúrate de que product.image es un objeto File
+    if (product.image instanceof File) {
+      formData.append('image', product.image);
+    } else {
+      console.error('Product image is not a file');
+      return throwError('Product image must be a file');
+    }
+  
+    // Verifica el contenido de FormData
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+    });
+
+    console.log('FormData ->>', formData);
+  
+    // Crea una nueva instancia de HttpRequest
+    const req = new HttpRequest('POST', url, formData, {
+      reportProgress: true,
+      headers: new HttpHeaders({
+        ContetType: 'multipart/form-data',
+        Authorization: `Bearer ${this.authService.getToken()}`
+      })
+    });
+  
+    return this.http.request<any>(req).pipe(
+      catchError(this.handleError<any>('addProduct'))
+    );
   }
 
-  updateProduct(productId: string, product: any): Observable<any> {
+  updateProduct(productId: string, product: ProductStoreAdd): Observable<any> {
     const url = `${this.apiUrl}/update/${productId}`;
-    return this.http
-      .put<any>(url, product, this.getHttpOptions())
-      .pipe(catchError(this.handleError<any>('updateProduct')));
+    const formData: FormData = new FormData();
+  
+    // Agrega cada campo individualmente
+    formData.append('store_id', product.store_id);
+    formData.append('product_name', product.product_name);
+    formData.append('price', product.price.toString());
+    formData.append('category', product.category);
+    formData.append('stock', product.stock.toString());
+    formData.append('supplier', product.supplier);
+  
+    // Asegúrate de que product.image es un objeto File
+    if (product.image instanceof File) {
+      formData.append('image', product.image);
+    } else {
+      console.error('Product image is not a file');
+      return throwError('Product image must be a file');
+    }
+  
+    // Verifica el contenido de FormData
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+    });
+  
+    console.log('FormData ->>', formData);
+  
+    // Crea una nueva instancia de HttpRequest
+    const req = new HttpRequest('PUT', url, formData, {
+      reportProgress: true,
+      headers: new HttpHeaders({
+        ContetType: 'multipart/form-data',
+        Authorization: `Bearer ${this.authService.getToken()}`
+      })
+    });
+  
+    return this.http.request<any>(req).pipe(
+      catchError(this.handleError<any>('updateProduct'))
+    );
   }
 
-  deleteProduct(productId: string): Observable<any> {
-    const url = `${this.apiUrl}/delete/${productId}`;
+  deleteProduct(productId: string, storeId: string): Observable<any> {
+    const url = `${this.apiUrl}/delete/${productId}/${storeId}`;
     return this.http
       .delete<any>(url, this.getHttpOptions())
       .pipe(catchError(this.handleError<any>('deleteProduct')));

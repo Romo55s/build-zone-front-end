@@ -1,1 +1,53 @@
-<p>form-inventory-add works!</p>
+<h1 class="text-blueGray-900">Add {{storeName}}</h1>
+<div class="p-grid p-dir-col form-container" style="max-width: 400px;">
+  <form (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="p-grid">
+      <div class="p-col-12">
+        <div class="p-col-12">
+          <div class="p-field m-4">
+            <label for="storeId">Store ID</label>
+            <input id="storeId" type="text" class="p-inputtext p-inputtext-lg" [(ngModel)]="storeId" name="storeId" readonly>
+          </div>
+        </div>
+        <div class="p-field m-4">
+          <label for="productName">Product Name</label>
+          <input id="productName" type="text" class="p-inputtext p-inputtext-lg" [(ngModel)]="product.product_name" name="productName">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="category">Category</label>
+          <input id="category" type="text" class="p-inputtext p-inputtext-lg" [(ngModel)]="product.category" name="category">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="price" >Price</label>
+          <input id="price" type="number" class="p-inputtext p-inputtext-lg" [(ngModel)]="product.price" name="price">
+        </div>
+      </div>
+      <div class="p-col-12 m-4">
+        <div class="p-field">
+          <label for="stock">Stock</label>
+          <input id="stock" type="number" class="p-inputtext p-inputtext-lg" [(ngModel)]="product.stock" name="stock">
+        </div>
+      </div>
+      <div class="p-col-12 m-4">
+        <div class="p-field">
+          <p-fileUpload mode="basic" type="file" name="image" accept="image/*" (onSelect)="onFileSelected($event)" chooseLabel="Select Image"></p-fileUpload>
+        </div>
+      </div>
+      <div class="p-col-12 m-4">
+        <div class="p-field">
+          <label for="supplier">Supplier</label>
+          <input id="supplier" type="text" class="p-inputtext p-inputtext-lg" [(ngModel)]="product.supplier" name="supplier">
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 m-4">
+      <button pButton type="submit" class="p-button bg-blueGray-200 text-blueGray-900 font-bold border-0 w-full justify-center">
+        <i class="pi pi-plus"></i> Add Product
+      </button>
+    </div>
+  </form>
+</div>

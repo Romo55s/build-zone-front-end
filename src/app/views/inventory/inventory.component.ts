@@ -7,6 +7,7 @@ import { ProductStore } from '../../../core/modules/product.store.module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StoreService } from '../../services/store/store.service';
 import { Store } from'../../../core/modules/stores.module'
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-inventory',
@@ -30,7 +31,9 @@ export class InventoryComponent implements OnInit {
     private inventoryService: InventoryService,
     private authService: AuthService,
     private route: ActivatedRoute,
+    private router: Router,
     private storeService: StoreService,
+    private confirmationService: ConfirmationService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -91,6 +94,8 @@ export class InventoryComponent implements OnInit {
         // Obtener el ID de la tienda
         console.log("Store by name", store);
         const storeId = store.store_id;
+        this.store = store;
+
         this.inventoryService.getByStoreId(storeId).subscribe(
           (data) => {
             console.log('Inventory data:', data);
@@ -166,12 +171,12 @@ export class InventoryComponent implements OnInit {
       console.error('Access denied: Only admins can delete products.');
       return;
     }
-
-    this.inventoryService.deleteProduct(product.id).subscribe(
+    console.log('Deleting product:', product.product_id, product.store_id);
+    this.inventoryService.deleteProduct(product.product_id, product.store_id).subscribe(
       () => {
         // Eliminar el producto del array local
         this.products = this.products.filter(
-          (p) => p.product_id !== product.product_id
+          (p) => product.id !== product.id
         );
         console.log('Product deleted successfully.');
       },
@@ -181,10 +186,28 @@ export class InventoryComponent implements OnInit {
     );
   }
 
-  updateProduct(product: any){
+  confirmDeleteProduct(product : any) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this product?',
+      accept: () => {
+        this.deleteProduct(product);
+      }
+    });
+  }
 
+  updateProduct(product: any){
+    if (this.store) {
+      this.router.navigate(['/updateProduct', { productId: product.product_id, storeId: product.store_id }]);
+    } else {
+      console.error('Store not loaded.');
+    }
   }
 
   addProduct():void{
+    if (this.store) {
+    this.router.navigate(['/addProduct', { storeId: this.store.store_id }]);
+  } else {
+    console.error('Store not loaded.');
+  }
   }
 }

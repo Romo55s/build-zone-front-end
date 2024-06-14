@@ -111,7 +111,7 @@
                 type="button"
                 icon="pi pi-times"
                 class="p-button-danger"
-                (click)="deleteProduct(product)"
+                (click)="confirmDeleteProduct(product)"
               ></button>
             </td>
           </tr>
@@ -120,3 +120,8 @@
     </div>
   </div>
 </div>
+<p-confirmDialog
+  header="Confirmation"
+  icon="pi pi-exclamation-triangle"
+  width="425"
+></p-confirmDialog>
