@@ -6,14 +6,16 @@ import { InventoryService } from '../../../../app/services/inventory/inventory.s
 @Component({
   selector: 'app-form-inventory-update',
   templateUrl: './form-inventory-update.component.html',
-  styleUrl: './form-inventory-update.component.scss'
+  styleUrls: ['./form-inventory-update.component.scss']
 })
 export class FormInventoryUpdateComponent {
   updateProductForm!: FormGroup;
   productId!: string;
   storeId!: string;
   product: any;
-
+  selectedFile: File | null = null; // Agregado para manejar la imagen seleccionada
+  storeName: any;
+  
   constructor(
     private fb: FormBuilder,
     private route: ActivatedRoute,
@@ -21,6 +23,7 @@ export class FormInventoryUpdateComponent {
     private inventoryService: InventoryService
   ) {
     this.updateProductForm = this.fb.group({
+      store_id: ['', Validators.required],
       product_name: ['', Validators.required],
       category: ['', Validators.required],
       supplier: ['', Validators.required],
@@ -50,18 +53,30 @@ export class FormInventoryUpdateComponent {
     );
   }
 
+  onFileSelected(event?: any): void { // Agregado para manejar la selección de la imagen
+    if(event && event.files && event.files.length > 0){
+      this.selectedFile = event.files[0];
+    }else{
+      console.log('No file selected');
+    }
+  }
+
   onSubmit(): void {
     if (this.updateProductForm.valid) {
       const updatedProduct = { ...this.updateProductForm.value, store_id: this.storeId };
   
       // Convertir el precio a una cadena de texto
       updatedProduct.price = updatedProduct.price.toString();
+
+      // Agregar la imagen seleccionada al producto actualizado
+      if (this.selectedFile) {
+        updatedProduct.image = this.selectedFile;
+      }
   
       // Enviamos los datos actualizados al servicio de inventario
       this.inventoryService.updateProduct(this.productId, updatedProduct).subscribe(
         response => {
           console.log('Product updated successfully:', response);
-          this.router.navigate(['/inventory', { storeId: this.storeId }]);
         },
         error => {
           console.error('Error updating product:', error);
@@ -72,10 +87,6 @@ export class FormInventoryUpdateComponent {
       console.error('El formulario no es válido.');
     }
   }
-  
-  
-  
-  
 
   cancel(): void {
     this.router.navigate(['/inventory', { storeId: this.storeId }]);

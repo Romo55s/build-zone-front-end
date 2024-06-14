@@ -26,6 +26,8 @@ import { ChartModule } from 'primeng/chart';
 import { CardModule } from 'primeng/card';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { BadgeModule } from 'primeng/badge';
+import { ConfirmationService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @NgModule({
   declarations: [
@@ -35,9 +37,9 @@ import { BadgeModule } from 'primeng/badge';
     SalesComponent,
     SalesReportComponent,
     ManagersComponent,
-    StoresComponent
+    StoresComponent,
   ],
-  providers: [AuthService, TostifyService, MessageService],
+  providers: [AuthService, TostifyService, MessageService, ConfirmationService],
   imports: [
     CommonModule,
     TableModule,
@@ -54,7 +56,8 @@ import { BadgeModule } from 'primeng/badge';
     ChartModule,
     CardModule,
     PanelMenuModule,
-    BadgeModule
-  ]
+    BadgeModule,
+    ConfirmDialogModule
+  ],
 })
-export class ViewsModule { }
+export class ViewsModule {}

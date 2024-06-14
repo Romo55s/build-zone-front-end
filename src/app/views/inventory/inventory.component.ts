@@ -7,6 +7,7 @@ import { ProductStore } from '../../../core/modules/product.store.module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StoreService } from '../../services/store/store.service';
 import { Store } from'../../../core/modules/stores.module'
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
   selector: 'app-inventory',
@@ -32,6 +33,7 @@ export class InventoryComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private storeService: StoreService,
+    private confirmationService: ConfirmationService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -169,12 +171,12 @@ export class InventoryComponent implements OnInit {
       console.error('Access denied: Only admins can delete products.');
       return;
     }
-
-    this.inventoryService.deleteProduct(product.id).subscribe(
+    console.log('Deleting product:', product.product_id, product.store_id);
+    this.inventoryService.deleteProduct(product.product_id, product.store_id).subscribe(
       () => {
         // Eliminar el producto del array local
         this.products = this.products.filter(
-          (p) => p.product_id !== product.product_id
+          (p) => product.id !== product.id
         );
         console.log('Product deleted successfully.');
       },
@@ -182,6 +184,15 @@ export class InventoryComponent implements OnInit {
         console.error('Error deleting product:', error);
       }
     );
+  }
+
+  confirmDeleteProduct(product : any) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete this product?',
+      accept: () => {
+        this.deleteProduct(product);
+      }
+    });
   }
 
   updateProduct(product: any){

@@ -35,7 +35,7 @@ export class FormInventoryAddComponent implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       this.storeId = params.get('storeId');
-      console.log('Store ID:', this.storeId);
+      
       if (this.storeId && this.authService.isValidUUID(this.storeId)) {
         this.product.store_id = this.storeId;
       } else {
