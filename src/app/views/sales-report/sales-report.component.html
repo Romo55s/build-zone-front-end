@@ -1,0 +1,97 @@
+<div class="flex flex-col w-full h-full">
+  <div class="flex-grow">
+    <div class="w-full">
+      <div>
+        <h1 class="text-blueGray-900">Sales Report {{storeName}}</h1>
+      </div>
+
+      <div
+        class="flex justify-between items-center px-5 py-4 border-b border-gray-100 bg-slate-200 border rounded-md"
+      >
+        <h2 class="font-semibold text-gray-800 text-md mr-4">List of Sales</h2>
+        <div class="flex space-x-4">
+          <div class="relative">
+            <span
+              class="h-full absolute inset-y-0 left-0 flex items-center pl-2"
+            >
+              <i class="pi pi-search text-gray-500"></i>
+            </span>
+            <input
+              type="text"
+              pInputText
+              placeholder="Search"
+              [(ngModel)]="searchTerm"
+              (input)="filterSales()"
+              class="pl-8"
+            />
+          </div>
+          <div class="relative">
+            <p-dropdown
+              [options]="categories"
+              [(ngModel)]="selectedCategory"
+              placeholder="Select Category"
+              (onChange)="filterSales()"
+            ></p-dropdown>
+            <p-button
+              *ngIf="selectedCategory"
+              icon="pi pi-times"
+              (click)="selectedCategory = null; filterSales()"
+            ></p-button>
+          </div>
+          <div class="relative">
+            <p-dropdown
+              [options]="products"
+              [(ngModel)]="selectedProduct"
+              placeholder="Select Product"
+              (onChange)="filterSales()"
+            ></p-dropdown>
+            <p-button
+              *ngIf="selectedProduct"
+              icon="pi pi-times"
+              (click)="selectedProduct = null; filterSales()"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+
+      <p-table [value]="filteredSales" [paginator]="true" [rows]="10">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="sale_id">
+              Sale ID <p-sortIcon field="sale_id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="sale_date">
+              Date <p-sortIcon field="sale_date"></p-sortIcon>
+            </th>
+            <th pSortableColumn="store_id">
+              Store <p-sortIcon field="store_id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="product_id">
+              Product <p-sortIcon field="product_id"></p-sortIcon>
+            </th>
+            <th pSortableColumn="quantity">
+              Quantity <p-sortIcon field="quantity"></p-sortIcon>
+            </th>
+            <th pSortableColumn="unit_price">
+              Unit Price <p-sortIcon field="unit_price"></p-sortIcon>
+            </th>
+            <th pSortableColumn="total_amount">
+              Total Amount <p-sortIcon field="total_amount"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-sale>
+          <tr>
+            <td>{{ sale.sale_id }}</td>
+            <td>{{ sale.sale_date | date }}</td>
+            <td>{{ sale.store_id }}</td>
+            <td>{{ sale.product_id }}</td>
+            <td>{{ sale.quantity }}</td>
+            <td>${{ sale.unit_price }}</td>
+            <td>${{ sale.total_amount }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="flex flex-col w-full h-full">
+    <div class="flex-grow">
+      <div class="w-full">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-blueGray-900">Managers {{ storeName }}</h1>
+          </div>
+          <div *ngIf="user?.role === 'admin'" class="">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-plus"
+              class="p-button-success"
+              (click)="addManager()"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+        <div
+          class="flex justify-between items-center px-5 py-4 border-b border-gray-100 bg-slate-200 border rounded-md"
+        >
+          <h2 class="font-semibold text-gray-800 text-md mr-4">
+            List of Managers
+          </h2>
+          <div class="flex space-x-4">
+            <div class="relative">
+              <span
+                class="h-full absolute inset-y-0 left-0 flex items-center pl-2"
+              >
+                <i class="pi pi-search text-gray-500"></i>
+              </span>
+              <input
+                type="text"
+                pInputText
+                placeholder="Search"
+                [(ngModel)]="searchTerm"
+                (input)="filterManager()"
+                class="pl-8"
+              />
+            </div>
+            </div>  
+            
+        </div>
+  
+        <p-table [value]="filteredManagers" [paginator]="true" [rows]="10">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="user_id">
+                Manager ID <p-sortIcon field="user_id"></p-sortIcon>
+              </th>
+              <th pSortableColumn="store_id">
+                Store <p-sortIcon field="store_id"></p-sortIcon>
+              </th>
+              <th pSortableColumn="username">
+                Username <p-sortIcon field="username"></p-sortIcon>
+              </th>
+              <th pSortableColumn="role">
+                Role <p-sortIcon field="role"></p-sortIcon>
+              </th>
+              <th *ngIf="user?.role === 'admin'">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-manager>
+            <tr>
+              <td>{{ manager.user_id }}</td>
+              <td>{{ manager.store_id}}</td>
+              <td>{{ manager.username }}</td>
+              <td>{{ manager.role }}</td>
+              <td *ngIf="user?.role === 'admin'">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-undo"
+                  class="pi-Button-primary"
+                  (click)="updateManager(manager)"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-times"
+                  class="p-button-danger"
+                  (click)="confirmDeleteManager(manager)"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <p-confirmDialog
+    header="Confirmation"
+    icon="pi pi-exclamation-triangle"
+    width="425"
+  ></p-confirmDialog>
+  

@@ -1,0 +1,53 @@
+<h1 class="text-blueGray-900">Add {{storeName}}</h1>
+<div class="p-grid p-dir-col form-container" style="max-width: 400px;">
+  <form [formGroup]="updateProductForm" (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="p-grid">
+      <div class="p-col-12">
+        <div class="p-col-12">
+          <div class="p-field m-4">
+            <label for="storeId">Store ID</label>
+            <input id="storeId" type="text" class="p-inputtext p-inputtext-lg" formControlName="store_id" readonly>
+          </div>
+        </div>
+        <div class="p-field m-4">
+          <label for="productName">Product Name</label>
+          <input id="productName" type="text" class="p-inputtext p-inputtext-lg" formControlName="product_name">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="category">Category</label>
+          <input id="category" type="text" class="p-inputtext p-inputtext-lg" formControlName="category">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="price" >Price</label>
+          <input id="price" type="number" class="p-inputtext p-inputtext-lg" formControlName="price">
+        </div>
+      </div>
+      <div class="p-col-12 m-4">
+        <div class="p-field">
+          <label for="stock">Stock</label>
+          <input id="stock" type="number" class="p-inputtext p-inputtext-lg" formControlName="stock">
+        </div>
+      </div>
+      <div class="p-col-12 m-4">
+        <div class="p-field">
+          <p-fileUpload mode="basic" type="file" name="image" accept="image/*" (onSelect)="onFileSelected($event)" chooseLabel="Select Image"></p-fileUpload>
+        </div>
+      </div>
+      <div class="p-col-12 m-4">
+        <div class="p-field">
+          <label for="supplier">Supplier</label>
+          <input id="supplier" type="text" class="p-inputtext p-inputtext-lg" formControlName="supplier">
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 m-4">
+      <button pButton type="submit" class="p-button bg-blueGray-200 text-blueGray-900 font-bold border-0 w-full justify-center">
+        <i class="pi pi-plus"></i> Update Product
+      </button>
+    </div>
+  </form>
+</div>
