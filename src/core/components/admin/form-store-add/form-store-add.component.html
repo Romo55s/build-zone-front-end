@@ -1,0 +1,40 @@
+<h1 class="text-blueGray-900">Add new Store</h1>
+<div class="p-grid p-dir-col form-container" style="max-width: 400px">
+  <form (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="p-grid">
+      <div class="p-col-12">
+        <div class="p-col-12">
+          <div class="p-field m-4">
+            <label for="storeId">Store Name</label>
+            <input
+              id="storeId"
+              type="text"
+              class="p-inputtext p-inputtext-lg"
+              [(ngModel)]="store.store_name"
+              name="store_name"
+            />
+          </div>
+        </div>
+        <div class="p-field m-4">
+          <label for="username">Location</label>
+          <input
+            id="username"
+            type="text"
+            class="p-inputtext p-inputtext-lg"
+            [(ngModel)]="store.location"
+            name="location"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 m-4">
+      <button
+        pButton
+        type="submit"
+        class="p-button bg-blueGray-200 text-blueGray-900 font-bold border-0 w-full justify-center"
+      >
+        <i class="pi pi-plus"></i> Add Store
+      </button>
+    </div>
+  </form>
+</div>
