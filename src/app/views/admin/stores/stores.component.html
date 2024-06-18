@@ -1,1 +1,93 @@
-<p>stores works!</p>
+<div class="flex flex-col w-full h-full">
+    <div class="flex-grow">
+      <div class="w-full">
+        <div class="flex justify-between items-center">
+          <div>
+            <h1 class="text-blueGray-900">Stores {{ storeName }}</h1>
+          </div>
+          <div *ngIf="user?.role === 'admin'" class="">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-plus"
+              class="p-button-success"
+              (click)="addStore()"
+            >
+              Add
+            </button>
+          </div>
+        </div>
+        <div
+          class="flex justify-between items-center px-5 py-4 border-b border-gray-100 bg-slate-200 border rounded-md"
+        >
+          <h2 class="font-semibold text-gray-800 text-md mr-4">
+            List of Stores
+          </h2>
+          <div class="flex space-x-4">
+            <div class="relative">
+              <span
+                class="h-full absolute inset-y-0 left-0 flex items-center pl-2"
+              >
+                <i class="pi pi-search text-gray-500"></i>
+              </span>
+              <input
+                type="text"
+                pInputText
+                placeholder="Search"
+                [(ngModel)]="searchTerm"
+                (input)="filterStores()"
+                class="pl-8"
+              />
+            </div>
+            </div>  
+            
+        </div>
+  
+        <p-table [value]="filteredStores" [paginator]="true" [rows]="10">
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="store_id">
+                Store ID<p-sortIcon field="store_id"></p-sortIcon>
+              </th>
+              <th pSortableColumn="store_name">
+                Store Name <p-sortIcon field="store_name"></p-sortIcon>
+              </th>
+              <th pSortableColumn="location">
+                Location <p-sortIcon field="location"></p-sortIcon>
+              </th>
+              <th *ngIf="user?.role === 'admin'">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-store>
+            <tr>
+              <td>{{ store.store_id}}</td>
+              <td>{{ store.store_name }}</td>
+              <td>{{ store.location }}</td>
+              <td *ngIf="user?.role === 'admin'">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-undo"
+                  class="pi-Button-primary"
+                  (click)="updateStores()"
+                ></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-times"
+                  class="p-button-danger"
+                  (click)="confirmDeleteStore(store)"
+                ></button>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <p-confirmDialog
+    header="Confirmation"
+    icon="pi pi-exclamation-triangle"
+    width="425"
+  ></p-confirmDialog>
+  

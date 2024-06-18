@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { provideNgVibeToastify } from '@ng-vibe/toastify';
 import { TostifyService } from './services/tostify/tostify.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { TostifyService } from './services/tostify/tostify.service';
     CoreModule,
     SharedModule,
     HttpClientModule,
-    ViewsModule
+    ViewsModule,
+    FormsModule
   ],
   providers: [provideClientHydration(), provideAnimations(), AuthGuard, MessageService, provideNgVibeToastify(), TostifyService],
   bootstrap: [AppComponent],

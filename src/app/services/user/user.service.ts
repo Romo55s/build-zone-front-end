@@ -5,16 +5,20 @@ import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { of } from 'rxjs';
 
+interface UserAdd {
+  store_id: string;
+  username: string;
+  password: string;
+  role: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = `http://localhost:3000`;
+  private apiUrl = `http://localhost:3000/user`;
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   private getHttpOptions() {
     const token = this.authService.getToken();
@@ -30,11 +34,33 @@ export class UserService {
     };
   }
 
+  addUser(managerData: UserAdd): Observable<any> {
+    console.log('Manager:', managerData);
+    const url = `${this.apiUrl}/add`;
+    console.log(this.getHttpOptions())
+    return this.http
+      .post<any>(url, managerData, this.getHttpOptions())
+      .pipe(catchError(this.handleError<any>('addManager')));
+  }
+
+  getUsers(): Observable<any[]> {
+    const url = `${this.apiUrl}/allusers`;
+    return this.http
+      .get<any[]>(url, this.getHttpOptions())
+      .pipe(catchError(this.handleError<any[]>('getUsers', [])));
+  }
+
   getUserById(userId: string): Observable<any> {
     const url = `${this.apiUrl}/userById/${userId}`;
     return this.http
       .get<any>(url, this.getHttpOptions())
       .pipe(catchError(this.handleError<any>('getUserById')));
+  }
+  getUsersByStoreId(storeId: string): Observable<any[]> {
+    const url = `${this.apiUrl}/usersByStoreId/${storeId}`;
+    return this.http
+      .get<any[]>(url, this.getHttpOptions())
+      .pipe(catchError(this.handleError<any[]>('getUsersByStoreId', [])));
   }
 
   updateUser(userId: string, userData: any): Observable<any> {
@@ -53,7 +79,15 @@ export class UserService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      console.error(`${operation} failed: ${error.message}`);
+      // Imprime el error completo en la consola
+      console.error(error);
+
+      // Si el error tiene un cuerpo, imprime ese también
+      if (error.error) {
+        console.error('Error Body:', error.error);
+      }
+
+      console.log(`${operation} failed: ${error.message}`);
       return of(result as T);
     };
   }

@@ -12,7 +12,7 @@ import { ConfirmationService } from 'primeng/api';
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.scss'],
+  styleUrl: './inventory.component.scss',
 })
 export class InventoryComponent implements OnInit {
   products: ProductStore[] = [];
@@ -24,7 +24,6 @@ export class InventoryComponent implements OnInit {
   categories: any[] = [];
   statuses: any[] = [];
   storeName: string ="";
-  tienda: any[] = [];
   store : Store | null = null;
 
   constructor(

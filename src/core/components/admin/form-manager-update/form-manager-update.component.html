@@ -1,1 +1,36 @@
-<p>form-manager-update works!</p>
+<h1 class="text-blueGray-900">Update</h1>
+<div class="p-grid p-dir-col form-container" style="max-width: 400px;">
+  <form [formGroup]="updateManagerForm" (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="p-grid">
+      <div class="p-col-12">
+        <div class="p-col-12">
+          <div class="p-field m-4">
+            <label for="storeId">Store ID</label>
+            <input id="storeId" type="text" class="p-inputtext p-inputtext-lg" formControlName="store_id" readonly>
+          </div>
+        </div>
+        <div class="p-field m-4">
+          <label for="username">Username</label>
+          <input id="username" type="text" class="p-inputtext p-inputtext-lg" formControlName="username">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="password">Password</label>
+          <input id="password" type="password" class="p-inputtext p-inputtext-lg" formControlName="password">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="role" >Role</label>
+          <input id="role" type="text" class="p-inputtext p-inputtext-lg" formControlName="role" readonly>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 m-4">
+      <button pButton type="submit" class="p-button bg-blueGray-200 text-blueGray-900 font-bold border-0 w-full justify-center">
+        <i class="pi pi-plus"></i> Update Manager
+      </button>
+    </div>
+  </form>
+</div>

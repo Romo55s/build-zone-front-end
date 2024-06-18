@@ -1,1 +1,36 @@
-<p>form-manager-add works!</p>
+<h1 class="text-blueGray-900">Add {{storeName}}</h1>
+<div class="p-grid p-dir-col form-container" style="max-width: 400px;">
+  <form (ngSubmit)="onSubmit()" class="p-fluid">
+    <div class="p-grid">
+      <div class="p-col-12">
+        <div class="p-col-12">
+          <div class="p-field m-4">
+            <label for="storeId">Store ID</label>
+            <input id="storeId" type="text" class="p-inputtext p-inputtext-lg" [(ngModel)]="storeId" name="storeId" readonly>
+          </div>
+        </div>
+        <div class="p-field m-4">
+          <label for="username">Username</label>
+          <input id="username" type="text" class="p-inputtext p-inputtext-lg" [(ngModel)]="manager.username" name="username">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="password">Password</label>
+          <input id="password" type="password" class="p-inputtext p-inputtext-lg" [(ngModel)]="manager.password" name="password">
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="p-field m-4">
+          <label for="role" >Role</label>
+          <input id="role" type="text" class="p-inputtext p-inputtext-lg" [(ngModel)]="manager.role" name="role" value="manager" readonly>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 m-4">
+      <button pButton type="submit" class="p-button bg-blueGray-200 text-blueGray-900 font-bold border-0 w-full justify-center">
+        <i class="pi pi-plus"></i> Add Manager
+      </button>
+    </div>
+  </form>
+</div>

@@ -20,7 +20,10 @@ export class SidebarComponent implements OnInit{
 
   items: any = [];
 
-  constructor(private authService: AuthService, private router: Router, private storeService: StoreService) {
+  constructor(
+    private authService: AuthService, 
+    private router: Router, 
+    private storeService: StoreService) {
     let userCookie = Cookies.get('user');
     this.user_store = '';
     try {
@@ -116,8 +119,8 @@ export class SidebarComponent implements OnInit{
             },
             {
               label: 'Stores',
-              icon: 'pi pi-shop',
-              items: this.buildZoneItems.map((item) => ({
+              icon:'pi pi-building',
+              items:this.buildZoneItems.map((item) => ({
                 ...item,
                 command: () => this.navigate('stores', item.label),
               })),
