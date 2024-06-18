@@ -222,7 +222,7 @@ export class InventoryComponent implements OnInit {
 
   generateReport() {
     const totalStock = this.calculateTotalStock();
-  
+    
     // Preparar los datos para el reporte
     const reportData: ReportProduct[] = this.filteredProducts.map((product) => ({
       Product: product.product_name,
@@ -232,7 +232,7 @@ export class InventoryComponent implements OnInit {
       Price: product.price,
       Stock: product.stock,
     }));
-  
+    console.log(reportData);
     // Agregar el total de productos al final del reporte
     reportData.push({
       Product: 'TOTAL',
