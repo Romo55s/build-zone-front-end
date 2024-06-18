@@ -17,7 +17,7 @@ interface UserAdd {
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = `${environment.apiUrl}/user`;
+  private apiUrl = `${environment.API_URL}/user`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

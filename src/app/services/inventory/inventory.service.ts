@@ -12,7 +12,7 @@ import { environment } from '../../../enviroments/enviroments';
   providedIn: 'root',
 })
 export class InventoryService {
-  private apiUrl = `${environment.apiUrl}/products`;
+  private apiUrl = `${environment.API_URL}/products`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
