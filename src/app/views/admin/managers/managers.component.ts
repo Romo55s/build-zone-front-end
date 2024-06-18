@@ -7,6 +7,7 @@ import { User } from '../../../../core/modules/user.module';
 import { AuthService } from '../../../services/auth/auth.service';
 import { StoreService } from '../../../services/store/store.service';
 import { UserService } from '../../../services/user/user.service';
+import { TostifyService } from '../../../services/tostify/tostify.service';
 
 @Component({
   selector: 'app-managers',
@@ -28,7 +29,8 @@ export class ManagersComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private storeService: StoreService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private toastyService: TostifyService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -125,9 +127,11 @@ export class ManagersComponent implements OnInit {
         this.users = this.users.filter(
           (p) => manager.id !== manager.id
         );
+        this.toastyService.showSuccess('Manager deleted successfully.');
         console.log('manager deleted successfully.');
       },
       (error) => {
+        this.toastyService.showError('Error deleting manager.');
         console.error('Error deleting manager:', error);
       }
     );

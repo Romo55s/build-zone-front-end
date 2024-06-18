@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import { ConfirmationService } from 'primeng/api';
 import { AuthService } from '../../../services/auth/auth.service';
 import { StoreService } from '../../../services/store/store.service';
+import { TostifyService } from '../../../services/tostify/tostify.service';
 
 @Component({
   selector: 'app-stores',
@@ -26,7 +27,8 @@ export class StoresComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private storeService: StoreService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private toastifyService: TostifyService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -89,16 +91,17 @@ export class StoresComponent implements OnInit {
         console.error('Access denied: Only admins can delete stores.');
         return;
       }
-      console.log('Deleting store:', store.store_id, store.store_id);
     this.storeService.deleteStore(store.store_id).subscribe(
       () => {
         // Eliminar el storeo del array local
         this.stores = this.stores.filter(
           (p) => store.id !== store.id
         );
+        this.toastifyService.showSuccess('Store deleted successfully.');
         console.log('store deleted successfully.');
       },
       (error) => {
+        this.toastifyService.showError('Error deleting store');
         console.error('Error deleting store:', error);
       }
     );

@@ -181,16 +181,17 @@ export class InventoryComponent implements OnInit {
       console.error('Access denied: Only admins can delete products.');
       return;
     }
-    console.log('Deleting product:', product.product_id, product.store_id);
     this.inventoryService.deleteProduct(product.product_id, product.store_id).subscribe(
       () => {
         // Eliminar el producto del array local
         this.products = this.products.filter(
           (p) => product.id !== product.id
         );
+        this.tostifyService.showSuccess('Product deleted successfully.');
         console.log('Product deleted successfully.');
       },
       (error) => {
+        this.tostifyService.showError('Error deleting product');
         console.error('Error deleting product:', error);
       }
     );
