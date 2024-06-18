@@ -3,12 +3,13 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service'; // Importa tu servicio de autenticación
+import { environment } from '../../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService {
-  private apiUrl = `http://localhost:3000/store`;
+  private apiUrl = `${environment.apiUrl}/store`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

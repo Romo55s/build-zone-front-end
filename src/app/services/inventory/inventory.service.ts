@@ -6,12 +6,13 @@ import { AuthService } from '../auth/auth.service'; // Importa tu servicio de au
 import { of } from 'rxjs';
 import { throwError } from 'rxjs';
 import { ProductStoreAdd } from '../../../core/modules/product.store.add.module';
+import { environment } from '../../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InventoryService {
-  private apiUrl = `http://localhost:3000/products`;
+  private apiUrl = `${environment.apiUrl}/products`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

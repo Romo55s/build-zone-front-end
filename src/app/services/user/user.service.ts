@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 import { of } from 'rxjs';
+import { environment } from '../../../enviroments/enviroments';
 
 interface UserAdd {
   store_id: string;
@@ -16,7 +17,7 @@ interface UserAdd {
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = `http://localhost:3000/user`;
+  private apiUrl = `${environment.apiUrl}/user`;
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
