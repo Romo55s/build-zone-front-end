@@ -9,6 +9,15 @@ import { StoreService } from '../../services/store/store.service';
 import { Store } from'../../../core/modules/stores.module'
 import { ConfirmationService } from 'primeng/api';
 
+interface ReportProduct {
+  Product: string;
+  Image: string;
+  Category: string;
+  Supplier: string;
+  Price: number;
+  Stock: number;
+}
+
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
@@ -209,5 +218,68 @@ export class InventoryComponent implements OnInit {
   } else {
     console.error('Store not loaded.');
   }
+  }
+  
+
+  generateReport() {
+    const totalStock = this.calculateTotalStock();
+  
+    // Preparar los datos para el reporte
+    const reportData: ReportProduct[] = this.filteredProducts.map((product) => ({
+      Product: product.product_name,
+      Image: product.image,
+      Category: product.category,
+      Supplier: product.supplier,
+      Price: product.price,
+      Stock: product.stock,
+    }));
+  
+    // Agregar el total de productos al final del reporte
+    reportData.push({
+      Product: 'TOTAL',
+      Image: '',
+      Category: '',
+      Supplier: '',
+      Price: 0, // Aquí puedes ajustar el tipo de dato según corresponda
+      Stock: totalStock,
+    });
+  
+    // Lógica para generar el reporte (e.g., exportar a CSV, mostrar en pantalla, etc.)
+    console.log('Report Data:', reportData);
+  
+    // Ejemplo: exportar a CSV
+    const csvData = this.convertToCSV(reportData);
+    this.downloadCSV(csvData);
+  }
+  
+  calculateTotalStock(): number {
+    // Calcular el total de productos en inventario sumando el stock de todos los productos
+    return this.filteredProducts.reduce((total, product) => total + product.stock, 0);
+  }
+  
+  convertToCSV(data: ReportProduct[]): string {
+    const header = ['Product', 'Image', 'Category', 'Supplier', 'Price', 'Stock'];
+    const rows = data.map(product => [
+      product.Product,
+      product.Image,
+      product.Category,
+      product.Supplier,
+      product.Price.toString(), // Asegúrate de convertir a string si es necesario
+      product.Stock.toString(), // Asegúrate de convertir a string si es necesario
+    ]);
+  
+    return [header, ...rows].map(row => row.join(',')).join('\n');
+  }
+  
+  downloadCSV(csvData: string) {
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'inventory_report.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }

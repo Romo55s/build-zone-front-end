@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service';
 
 @Injectable({
@@ -51,8 +51,14 @@ export class SalesService {
     const url = `${this.apiUrl}/add`;
     return this.http
       .post<any>(url, sale, this.getHttpOptions())
-      .pipe(catchError(this.handleError<any>('addSale')));
+      .pipe(
+        map((response: any) => {
+          return { ...response, sale_id: response.sale_id }; // Asegúrate de capturar el sale_id devuelto
+        }),
+        catchError(this.handleError<any>('addSale'))
+      );
   }
+  
 
   deleteSale(saleId: string): Observable<any> {
     const url = `${this.apiUrl}/delete/${saleId}`;

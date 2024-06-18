@@ -167,6 +167,8 @@ export class SalesComponent implements OnInit {
       console.log('Adding sale:', sale);
       this.salesService.addSale(sale).subscribe(
         (data) => {
+          const saleId = data.sale_id;
+          sale.sale_id = saleId; 
           console.log('Sale added:', data);
           this.messageService.add({severity:'success', summary:'Success', detail:'Sale added successfully'});
         },

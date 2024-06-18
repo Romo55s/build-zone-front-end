@@ -12,6 +12,9 @@ import { Router } from 'express';
 import { StoreService } from '../../services/store/store.service';
 import { ActivatedRoute } from '@angular/router';
 
+interface SalesReport extends Sale {
+  total_sales_amount: number;
+}
 
 @Component({
   selector: 'app-sales-report',
@@ -21,6 +24,7 @@ import { ActivatedRoute } from '@angular/router';
 export class SalesReportComponent implements OnInit {
   sales: Sale[] = [];
   filteredSales: Sale[] = [];
+  totalSalesAmount: number = 0;
   user: any;
   products: ProductStore[] = [];
   selectedCategory: string | null = null;
@@ -104,7 +108,7 @@ export class SalesReportComponent implements OnInit {
   }
 
 
-    allSales(): void {
+  allSales(): void {
       this.salesService.getAll().subscribe(
         (sales) => {
           console.log('All sales data:', sales);
@@ -200,5 +204,63 @@ export class SalesReportComponent implements OnInit {
     } else {
       this.filteredSales = this.sales;
     }
+    this.calculateTotalSalesAmount(); // Actualiza el total después de filtrar
+
   }
+
+
+  calculateTotalSalesAmount(): any {
+    this.totalSalesAmount = this.filteredSales.reduce((total, sale) => total + Number(sale.total_amount), 0);
+      this.totalSalesAmount = parseFloat(this.totalSalesAmount.toFixed(2));
+      return this.totalSalesAmount;
+  }
+
+  generateReport() {
+    const reportData: SalesReport[] = this.filteredSales.map(sale => ({
+      ...sale,
+      total_sales_amount: sale.total_amount // Aquí, total_sales_amount es igual al total de esa venta específica.
+    }));
+
+    console.log('Report Data:', reportData);
+
+    const csvData = this.convertToCSV(reportData);
+    this.downloadCSV(csvData);
+  }
+
+  convertToCSV(data: SalesReport[]): string {
+    const total = this.calculateTotalSalesAmount();
+    const header = ['Sale ID', 'Date', 'Store', 'Product', 'Quantity', 'Unit Price', 'Total Amount'];
+    const rows = data.map(sale => [
+      sale.sale_id,
+      sale.sale_date,
+      sale.store_id,
+      sale.product_id,
+      sale.quantity,
+      sale.unit_price,
+      sale.total_amount,
+    ]);
+
+    // Agregar fila total al final
+    const totalRow = ['TOTAL', '', '', '', '', '', total];
+
+    return [header, ...rows, totalRow].map(row => row.join(',')).join('\n');
+  }
+
+  downloadCSV(csvData: string) {
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'sales_report.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  getProductById(productId: string): ProductStore | undefined {
+    return this.products.find(product => product.product_id === productId);
+  }
+
+  
 }
