@@ -12,6 +12,7 @@ import { UserService } from '../../../../app/services/user/user.service';
 export class FormManagerUpdateComponent  implements OnInit{
   updateManagerForm!: FormGroup;
   storeId!: string;
+  userId!: string;
   storeName: any;
 
   constructor(private fb: FormBuilder,
@@ -28,21 +29,24 @@ export class FormManagerUpdateComponent  implements OnInit{
   }
 
   ngOnInit(): void {
-    // Obtener el ID del usuario de la ruta
+    // Obtener el ID del usuario y la tienda de la ruta
     this.route.params.subscribe(params => {
       this.storeId = params['storeId'];
-
+      this.userId = params['userId'];
     })
-
+    
     // Llamar al servicio para obtener la información del usuario
-    this.user.getUserById(this.storeId).subscribe((data: any) => {
+    this.user.getUserById(this.userId).subscribe((response: any) => {
+      console.log('User:', response);
       // Verificar si se obtuvo la información correctamente
-      if (data.success) {
+      console.log('User:', response.role);
+      if (response) {
         // Establecer los valores en el formulario
         this.updateManagerForm.patchValue({
-          store_id: data.user.store_id,
-          username: data.user.username,
-          role: data.user.role
+          store_id: response.store_id,
+          username: response.username,
+          password: response.password,
+          role: response.role
         });
       } else {
         // Manejar el caso en que no se pueda obtener la información del usuario
@@ -51,7 +55,22 @@ export class FormManagerUpdateComponent  implements OnInit{
     });
   }
   
-
   onSubmit(): void {
+    if (this.updateManagerForm.valid) {
+      const userData = this.updateManagerForm.value;
+      this.user.updateUser(this.userId, userData).subscribe(
+        response => {
+          console.log('User updated successfully', response);
+          // Aquí puedes redirigir al usuario o mostrar un mensaje de éxito
+        },
+        error => {
+          console.error('Error updating user', error);
+          // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
+        }
+      );
+    } else {
+      console.error('Form is not valid');
+      // Aquí puedes manejar el caso en que el formulario no sea válido, por ejemplo, mostrando un mensaje al usuario
+    }
   }
 }

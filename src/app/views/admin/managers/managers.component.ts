@@ -88,61 +88,6 @@ export class ManagersComponent implements OnInit {
       }
     );
   }
-  
-  
-  /*filtermanagers() {
-    // Realiza el filtrado solo si hay manageros cargados
-    if (this.managers.length > 0) {
-      // Realiza el filtrado en función de los criterios seleccionados
-      this.filteredmanagers = this.managers.filter((manager) => {
-        const matchesCategory =
-          !this.selectedCategory || manager.category === this.selectedCategory;
-        const matchesStock =
-          !this.selectedStock || manager.stock === this.selectedStock;
-        const matchesSearchTerm =
-          !this.searchTerm ||
-          manager.manager_name
-            .toLowerCase()
-            .includes(this.searchTerm.toLowerCase());
-        return matchesCategory && matchesStock && matchesSearchTerm;
-      });
-    } else {
-      // Si no hay manageros cargados, asigna todos los manageros a los filtrados
-      this.filteredmanagers = this.managers;
-    }
-  }
-
-  deletemanager(manager: any) {
-    if (this.user?.role !== 'admin') {
-      console.error('Access denied: Only admins can delete managers.');
-      return;
-    }
-    console.log('Deleting manager:', manager.manager_id, manager.store_id);
-    this.inventoryService.deletemanager(manager.manager_id, manager.store_id).subscribe(
-      () => {
-        // Eliminar el managero del array local
-        this.managers = this.managers.filter(
-          (p) => manager.id !== manager.id
-        );
-        console.log('manager deleted successfully.');
-      },
-      (error) => {
-        console.error('Error deleting manager:', error);
-      }
-    );
-  }
-
-  confirmDeletemanager(manager : any) {
-    this.confirmationService.confirm({
-      message: 'Are you sure you want to delete this manager?',
-      accept: () => {
-        this.deletemanager(manager);
-      }
-    });
-  }
-*/
-  
-  
 
   addManager():void{
     if (this.store) {
@@ -153,7 +98,7 @@ export class ManagersComponent implements OnInit {
   }
   updateManager(manager: any ):void{
     if (this.store) {
-      this.router.navigate(['/updateManager', { storeId: this.store.store_id }]);
+      this.router.navigate(['/updateManager', { storeId: this.store.store_id, userId: manager.user_id }]);
     } else {
       console.error('Store not loaded.');
     }
@@ -173,8 +118,8 @@ export class ManagersComponent implements OnInit {
       console.error('Access denied: Only admins can delete managers.');
       return;
     }
-    console.log('Deleting manager:', manager.manager_id, manager.store_id);
-    this.userService.deleteUser(manager.manager_id).subscribe(
+    console.log('Deleting manager:', manager.user_id, manager.store_id);
+    this.userService.deleteUser(manager.user_id).subscribe(
       () => {
         // Eliminar el managero del array local
         this.users = this.users.filter(
