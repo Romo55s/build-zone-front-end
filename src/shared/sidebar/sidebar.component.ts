@@ -120,11 +120,7 @@ export class SidebarComponent implements OnInit{
             {
               label: 'Stores',
               icon:'pi pi-building',
-              items:this.buildZoneItems.map((item) => ({
-                ...item,
-                command: () => this.navigate('stores', item.label),
-              })),
-              command: () => this.navigate('stores', ''),
+              command: () => this.storeAdmin(),
             },
             {
               label: 'Log out',
@@ -152,6 +148,9 @@ export class SidebarComponent implements OnInit{
     this.router.navigate(['/dashboard']);
   }
 
+  storeAdmin(): void {
+    this.router.navigate(['/stores']);
+  }
   // Manager
 
   dashboardManager(): void {

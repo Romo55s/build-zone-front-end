@@ -11,6 +11,7 @@ import { Store } from'../../../core/modules/stores.module'
 import { Router } from 'express';
 import { StoreService } from '../../services/store/store.service';
 import { ActivatedRoute } from '@angular/router';
+import { TostifyService } from '../../services/tostify/tostify.service';
 
 interface SalesReport extends Sale {
   total_sales_amount: number;
@@ -43,7 +44,7 @@ export class SalesReportComponent implements OnInit {
     private inventoryService: InventoryService,
     private storeService: StoreService,
     private route: ActivatedRoute,
-
+    private toastService: TostifyService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -220,9 +221,7 @@ export class SalesReportComponent implements OnInit {
       ...sale,
       total_sales_amount: sale.total_amount // Aquí, total_sales_amount es igual al total de esa venta específica.
     }));
-
-    console.log('Report Data:', reportData);
-
+    this.toastService.showSuccess('Report generated successfully.');
     const csvData = this.convertToCSV(reportData);
     this.downloadCSV(csvData);
   }

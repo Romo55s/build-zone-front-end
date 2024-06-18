@@ -12,6 +12,8 @@ import { FormInventoryUpdateComponent } from '../core/components/admin/form-inve
 import { FormManagerAddComponent } from '../core/components/admin/form-manager-add/form-manager-add.component';
 import { FormManagerUpdateComponent } from '../core/components/admin/form-manager-update/form-manager-update.component';
 import { StoresComponent } from './views/admin/stores/stores.component';
+import { FormStoreAddComponent } from '../core/components/admin/form-store-add/form-store-add.component';
+import { FormStoreUpdateComponent } from '../core/components/admin/form-store-update/form-store-update.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -26,6 +28,8 @@ const routes: Routes = [
   { path: 'managers', component: ManagersComponent, canActivate: [AuthGuard]},
   { path: 'managers/:storeName', component: ManagersComponent, canActivate: [AuthGuard]},
   { path: 'stores', component: StoresComponent, canActivate: [AuthGuard]},
+  { path: 'addStore', component: FormStoreAddComponent, canActivate: [AuthGuard]},
+  { path: 'updateStore/:id', component: FormStoreUpdateComponent, canActivate: [AuthGuard]},
   { path: 'stores/:storeName', component: StoresComponent, canActivate: [AuthGuard]},
   { path: 'addProduct', component: FormInventoryAddComponent, canActivate: [AuthGuard]},
   { path: 'updateProduct', component: FormInventoryUpdateComponent, canActivate: [AuthGuard]}, 

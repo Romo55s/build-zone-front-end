@@ -62,8 +62,15 @@ export class StoresComponent implements OnInit {
       );
     }
 
-    addStore(){}
-    updateStores(){}
+    addStore() {
+      this.router.navigate(['/addStore']);
+    }
+    
+    updateStore(store: Store) {
+      console.log('Updating store:', store.store_id);
+      this.router.navigate(['/updateStore', store.store_id]);
+    }
+
     loadStores(storeName: string): void{
       this.storeService.getStoreByName(storeName).subscribe(
         (store: Store) => {

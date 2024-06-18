@@ -8,6 +8,8 @@ import { FormInventoryUpdateComponent } from './components/admin/form-inventory-
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms'; 
 import { FileUploadModule } from 'primeng/fileupload';
+import { FormStoreAddComponent } from './components/admin/form-store-add/form-store-add.component';
+import { FormStoreUpdateComponent } from './components/admin/form-store-update/form-store-update.component';
 
 
 
@@ -18,6 +20,8 @@ import { FileUploadModule } from 'primeng/fileupload';
     FormManagerUpdateComponent,
     FormInventoryAddComponent,
     FormInventoryUpdateComponent,
+    FormStoreAddComponent,
+    FormStoreUpdateComponent,
   ],
   imports: [
     CommonModule,

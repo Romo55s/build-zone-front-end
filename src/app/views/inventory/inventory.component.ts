@@ -8,6 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { StoreService } from '../../services/store/store.service';
 import { Store } from'../../../core/modules/stores.module'
 import { ConfirmationService } from 'primeng/api';
+import { TostifyService } from '../../services/tostify/tostify.service';
 
 interface ReportProduct {
   Product: string;
@@ -41,7 +42,8 @@ export class InventoryComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private storeService: StoreService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private tostifyService: TostifyService
   ) {
     let userCookie = Cookies.get('user');
     try {
@@ -243,8 +245,7 @@ export class InventoryComponent implements OnInit {
       Stock: totalStock,
     });
   
-    // Lógica para generar el reporte (e.g., exportar a CSV, mostrar en pantalla, etc.)
-    console.log('Report Data:', reportData);
+    this.tostifyService.showSuccess('Report generated successfully.');
   
     // Ejemplo: exportar a CSV
     const csvData = this.convertToCSV(reportData);
