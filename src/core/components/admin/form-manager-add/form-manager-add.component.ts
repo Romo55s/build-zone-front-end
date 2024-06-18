@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../../../app/services/user/user.service';
 import { AuthService } from '../../../../app/services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TostifyService } from '../../../../app/services/tostify/tostify.service';
 
 interface UserAdd {
   store_id: string;
@@ -33,7 +34,8 @@ export class FormManagerAddComponent implements OnInit {
     private userService: UserService, // Inyecta el servicio UserService
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private tostifyService: TostifyService
   ) {}
 
   ngOnInit(): void {
@@ -56,13 +58,14 @@ export class FormManagerAddComponent implements OnInit {
 
     // Asegúrate de asignar el store_id al manager
     this.manager.store_id = this.storeId;
-    console.log('Manager:', this.manager);
     this.userService.addUser(this.manager).subscribe(
       (response) => {
         console.log('Manager added successfully', response);
+        this.tostifyService.showSuccess('Manager added successfully');
       },
       (error) => {
         console.error('Error adding manager', error);
+        this.tostifyService.showError('Error adding manager', error);
       }
     );
   }

@@ -4,6 +4,7 @@ import { InventoryService } from '../../../../app/services/inventory/inventory.s
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../../../app/services/auth/auth.service';
 import { ProductStoreAdd } from '../../../modules/product.store.add.module';
+import { TostifyService } from '../../../../app/services/tostify/tostify.service';
 
 @Component({
   selector: 'app-form-inventory-add',
@@ -29,7 +30,8 @@ export class FormInventoryAddComponent implements OnInit {
     private inventoryService: InventoryService, 
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private tostifyService: TostifyService
   ) {}
 
   ngOnInit(): void {
@@ -59,16 +61,15 @@ export class FormInventoryAddComponent implements OnInit {
       console.error('Store ID is null, cannot submit the form');
       return;
     }
-
-    // Asegúrate de asignar el store_id al producto
     this.product.store_id = this.storeId;
-    console.log('Product:', this.product);
     this.inventoryService.addProduct(this.product).subscribe(
       (response) => {
         console.log('Product added successfully', response);
+        this.tostifyService.showSuccess('Product added successfully');
       },
       (error) => {
         console.error('Error adding product', error);
+        this.tostifyService.showError('Error adding product', error);
       }
     );
   }

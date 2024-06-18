@@ -3,6 +3,7 @@ import { StoreService } from '../../../../app/services/store/store.service';
 import { AuthService } from '../../../../app/services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '../../../modules/stores.module';
+import { TostifyService } from '../../../../app/services/tostify/tostify.service';
 
 @Component({
   selector: 'app-form-store-add',
@@ -24,7 +25,8 @@ export class FormStoreAddComponent {
     private storeService: StoreService, // Inyecta el servicio UserService
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private tostifyService: TostifyService
   ) {}
 
   ngOnInit(): void {
@@ -35,9 +37,11 @@ export class FormStoreAddComponent {
     this.storeService.createStore(this.store).subscribe(
       (response) => {
         console.log('Store added successfully', response);
+        this.tostifyService.showSuccess('Store added successfully');
       },
       (error) => {
         console.error('Error adding Store', error);
+        this.tostifyService.showError('Error adding Store', error);
       }
     );
   }

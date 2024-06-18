@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RowToggler } from 'primeng/table';
 import { UserService } from '../../../../app/services/user/user.service';
+import { TostifyService } from '../../../../app/services/tostify/tostify.service';
 
 @Component({
   selector: 'app-form-manager-update',
@@ -18,7 +19,8 @@ export class FormManagerUpdateComponent  implements OnInit{
   constructor(private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private user: UserService
+    private user: UserService,
+    private tostifyService: TostifyService
   ) {
     this.updateManagerForm = this.fb.group({
       store_id: ['', Validators.required],
@@ -37,9 +39,6 @@ export class FormManagerUpdateComponent  implements OnInit{
     
     // Llamar al servicio para obtener la información del usuario
     this.user.getUserById(this.userId).subscribe((response: any) => {
-      console.log('User:', response);
-      // Verificar si se obtuvo la información correctamente
-      console.log('User:', response.role);
       if (response) {
         // Establecer los valores en el formulario
         this.updateManagerForm.patchValue({
@@ -61,15 +60,18 @@ export class FormManagerUpdateComponent  implements OnInit{
       this.user.updateUser(this.userId, userData).subscribe(
         response => {
           console.log('User updated successfully', response);
+          this.tostifyService.showSuccess('User updated successfully');
           // Aquí puedes redirigir al usuario o mostrar un mensaje de éxito
         },
         error => {
           console.error('Error updating user', error);
+          this.tostifyService.showError('Error updating user', error);
           // Aquí puedes manejar el error, por ejemplo, mostrando un mensaje al usuario
         }
       );
     } else {
       console.error('Form is not valid');
+      this.tostifyService.showError('Form is not valid');
       // Aquí puedes manejar el caso en que el formulario no sea válido, por ejemplo, mostrando un mensaje al usuario
     }
   }

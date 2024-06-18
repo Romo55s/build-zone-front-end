@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryService } from '../../../../app/services/inventory/inventory.service';
+import { TostifyService } from '../../../../app/services/tostify/tostify.service';
 
 @Component({
   selector: 'app-form-inventory-update',
@@ -20,7 +21,8 @@ export class FormInventoryUpdateComponent {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private inventoryService: InventoryService
+    private inventoryService: InventoryService,
+    private tostifyService: TostifyService
   ) {
     this.updateProductForm = this.fb.group({
       store_id: ['', Validators.required],
@@ -77,9 +79,11 @@ export class FormInventoryUpdateComponent {
       this.inventoryService.updateProduct(this.productId, updatedProduct).subscribe(
         response => {
           console.log('Product updated successfully:', response);
+          this.tostifyService.showSuccess('Product updated successfully');
         },
         error => {
           console.error('Error updating product:', error);
+          this.tostifyService.showError('Error updating product:', error);
         }
       );
     } else {
@@ -93,6 +97,5 @@ export class FormInventoryUpdateComponent {
   }
 
   showProductInfo(): void {
-    console.log(this.product);
   }
 }

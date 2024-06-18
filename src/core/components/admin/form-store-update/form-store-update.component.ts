@@ -3,6 +3,7 @@ import { StoreService } from '../../../../app/services/store/store.service';
 import { AuthService } from '../../../../app/services/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '../../../modules/stores.module';
+import { TostifyService } from '../../../../app/services/tostify/tostify.service';
 
 @Component({
   selector: 'app-form-store-update',
@@ -24,13 +25,13 @@ export class FormStoreUpdateComponent implements OnInit {
     private storeService: StoreService, // Inyecta el servicio UserService
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private tostifyService: TostifyService
   ) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.storeId = params['id'];
-      console.log('Store ID:', this.storeId);
       this.loadStore(this.storeId);
     })
   }
@@ -50,9 +51,12 @@ export class FormStoreUpdateComponent implements OnInit {
     this.storeService.updateStore(this.storeId, this.store).subscribe(
       (response) => {
         console.log('Store updated successfully', response);
+        this.tostifyService.showSuccess('Store updated successfully'); // Muestra un mensaje de éxito
+
       },
       (error) => {
         console.error('Error updating Store', error);
+        this.tostifyService.showError('Error updating Store', error); // Muestra un mensaje de éxito
       }
     );
   }
