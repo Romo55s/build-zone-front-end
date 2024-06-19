@@ -92,7 +92,7 @@ export class DashboardComponent implements OnInit {
               (product) => product.total_quantity
             );
             const backgroundColors = topSalesProductData.map((product, index) =>
-              index === 0 ? '#FF6384' : '#36A2EB'
+              this.generateRandomColor()
             ); // Resalta el más vendido
 
             const topProduct = topSalesProductData[0];
